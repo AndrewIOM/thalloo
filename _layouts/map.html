@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include head.html %}
+
+<body>
+    <div class="container">
+        <div class="top-links">
+            <a href="/" target="_blank" class="top-links-right">Some website</a>            
+            <a href="/">&larr; All Evidence Maps</a>
+        </div>
+        <hr/>
+
+        <h1 id="study-name" data-bind="text: title">Loading...<br/><small id="study-publication"></small></h1>
+        <hr/>
+        <div class="row">
+            <div class="nine columns">
+                <svg id="map" />
+
+                <!-- Slicer -->
+                <h3>Slice</h3>
+                <div class="slicer">
+                    <label for="slicer">By Dimension</label>
+                    <select class="u-full-width" data-bind=" options: slices, optionsCaption: 'None', optionsText: function(item) { return item.name }, value: currentSlice"></select>
+                    <div id="slicer" data-bind="slider: currentSlice, sliderOptions: {minValue: 0, max: 100, range: 'min', step: 1"></div>
+                </div>
+                <div data-bind="visible: currentSlice() != null">
+                    <span data-bind="text: currentSliceMin">?</span> -
+                    <span data-bind="text: currentSliceMax">?</span>
+                    <span data-bind="text: currentSlice() ? currentSlice().unit : ''">?</span>
+                    <br/>
+                    <button>Stash Slice</button>
+                </div>
+
+                <table data-bind="visible: stashedSlices().length > 0">
+                    <thead>
+                        <tr>
+                            <th>Slice</th>
+                            <th>Range</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: stashedSlices">
+                        <tr>
+                            <td data-bind="text: name"></td>
+                            <td data-bind="text: lower + ' to ' + upper"></td>
+                            <td><button data-bind="click: $parent.removeFilter:">☓</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="three columns">
+                <p data-bind="text: description"></p>
+                {{ content }}
+            
+                <p>From the publication <a href="http://iopscience.iop.org/article/10.1088/1748-9326/aa7989" target="_blank">Martin et al (2017)</a></p>
+
+                <form id="filter-form" data-bind="submit: stashFilter">
+                    <h3>Filter</h3>
+
+                    <label for="exampleRecipientInput">Metadata</label>
+                    <select class="u-full-width" data-bind=" options: filters,
+                                        optionsText: function(item) { return item.name },
+                                        value: selectedFilter"></select>
+
+                    <!-- List of active filters and slices -->
+                    <table data-bind="visible: stashedFilters().length > 0">
+                        <thead>
+                            <tr>
+                                <th>Filter</th>
+                                <th>Value</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: stashedFilters">
+                            <tr>
+                                <td data-bind="text: name"></td>
+                                <td data-bind="text: value"></td>
+                                <td><button data-bind="click: $parent.removeFilter">☓</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <select multiple style="height:15em; width:100%;" data-bind="options: selectedFilter() ? selectedFilter().options : [],
+                                   selectedOptions: selectedFilters"></select>
+                    <button>Stash Filter</button>
+                </form>
+
+                <div id="details-panel" data-bind="visible: baselayers().length > 0">
+                    <h3>Base Layers</h3>
+                    <div data-bind="foreach: baselayers">
+                        <strong data-bind="text: $data.name"></strong>
+                        <p data-bind="text: $data.description"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+<script src="/scripts/thalloo-map.js"></script>
+<script src="/scripts/app.js"></script>
+<script>
+    var vm = new ThallooViewModel('arcticshrub');
+    ko.applyBindings(vm);
+    var redrawMap = vm.redrawMap;
+</script>
+{% include analytics.html %}
+</html>

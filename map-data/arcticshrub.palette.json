@@ -1,0 +1,25 @@
+{
+    "DisplayUnit": [
+        { "name": "2 Air Temperature", "hex": "015ce6" },
+        { "name": "3 Carbon Dioxide", "hex": "ff2fc5" },
+        { "name": "4 Fire", "hex": "ff2501" },
+        { "name": "5 Humidity", "hex": "ebc2fd" },
+        { "name": "6 Ice and Frost", "hex": "befee8" },
+        { "name": "7 Light", "hex": "fdfc02" },
+        { "name": "8 Snow", "hex": "white" },
+        { "name": "9 Herbivory", "hex": "38a801" },
+        { "name": "10 Fungal", "hex": "8ee458" },
+        { "name": "11 Soil Surface", "hex": "ff8c22" },
+        { "name": "12 Active Layer Depth", "hex": "e5bd73" },
+        { "name": "12 Soil Belowground Conditions", "hex": "a87000" },
+        { "name": "13 Soil Moisture", "hex": "73b2ff" },
+        { "name": "14 Soil Belowground Resources", "hex": "664402" },
+
+        { "name": "Ecosystem Structure", "hex": "8ee458" },
+        { "name": "Soil Nutrients", "hex": "664402" },
+        { "name": "Topography", "hex": "ff8c22" },
+        { "name": "Human", "hex": "ff2fc5" },
+        { "name": "Glacial and Periglacial", "hex": "befee8" },
+        { "name": "Sea Ice Extent", "hex": "fff" }
+    ]
+}

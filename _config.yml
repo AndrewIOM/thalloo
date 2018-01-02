@@ -1,0 +1,23 @@
+# Thalloo - Geotemporal Mapping Tool
+#
+# This project uses Jekyll to integrate with GitHub Pages.
+# Configure the basic settings below to configure your copy.
+
+# Your site settings
+title: Thalloo Maps
+description: > # this means to ignore newlines until "baseurl:"
+  A range of environmental datasets that can be visualised across space and through time.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://x.x" # the base hostname & protocol for your site
+
+# Internal configuration
+markdown: kramdown
+collections:
+  maps:
+    output: true
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default"
