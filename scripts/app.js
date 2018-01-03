@@ -89,6 +89,7 @@ function ThallooViewModel(mapname) {
     self.id = ko.observable();
     self.title = ko.observable();
     self.description = ko.observable();
+    self.publication = ko.observable();
     self.baselayers = ko.observableArray();
 
     self.filters = ko.observableArray();
@@ -131,7 +132,7 @@ function ThallooViewModel(mapname) {
                 .chain()
                 .filter(function (dp) {
                     return _.find(self.selectedFilters(), function (b) {
-                        return b === dp[self.selectedFilter().column];
+                        return stringPresentInSemicolonList(dp[self.selectedFilter().column], b)
                     });
                 })
                 ._wrapped;
@@ -165,6 +166,7 @@ function ThallooViewModel(mapname) {
     };
 
     self.selectedFilter.subscribe(function (filter) {
+        self.selectedFilters([]);
         self.redrawMap();
     });
     self.selectedFilters.subscribe(function (filters) {
@@ -201,6 +203,7 @@ function ThallooViewModel(mapname) {
             self.baselayers(config.baselayers);
             self.title(config.name);
             self.description(config.description);
+            self.publication(config.publication);
             $('#study-publication').val(config.publication);
             _(config.fields)
                 .map(function (field) {
@@ -222,6 +225,10 @@ function ThallooViewModel(mapname) {
                     } else if (field.datatype == "string") {
                         field.options = _.chain(self.rawData)
                             .pluck(field.column)
+                            .map(function(s) {
+                                return _.map(s.split(';'), function(st) { return st.trim(); });
+                            })
+                            .flatten()
                             .uniq()
                             .sortBy(function (i) {
                                 return i.toLowerCase();
@@ -233,4 +240,9 @@ function ThallooViewModel(mapname) {
             self.redrawMap();
         });
     });
+}
+
+function stringPresentInSemicolonList(list, str) {
+    let x = _.map(list.split(';'), function(st) { return st.trim(); });
+    return _.contains(x,str);
 }

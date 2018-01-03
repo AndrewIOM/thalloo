@@ -54,7 +54,7 @@
                 <p data-bind="text: description"></p>
                 {{ content }}
             
-                <p>From the publication <a href="http://iopscience.iop.org/article/10.1088/1748-9326/aa7989" target="_blank">Martin et al (2017)</a></p>
+                <p data-bind="text: publication"></p>
 
                 <form id="filter-form" data-bind="submit: stashFilter">
                     <h3>Filter</h3>
@@ -101,7 +101,7 @@
 <script src="/scripts/thalloo-map.js"></script>
 <script src="/scripts/app.js"></script>
 <script>
-    var vm = new ThallooViewModel('arcticshrub');
+    var vm = new ThallooViewModel('{{page.mapname}}');
     ko.applyBindings(vm);
     var redrawMap = vm.redrawMap;
 </script>

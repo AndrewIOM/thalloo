@@ -1,0 +1,17 @@
+{
+    "name": "Certification Schemes",
+    "description": "Evidence for certification schemes.",
+    "publication": "Awaiting Publication",
+    "projection": "standard",
+    "pointDisplay": "single",
+    "displayUnit": "Production system/sector",
+    "baselayers": [
+        { "file": "world110", "name": "Countries", "description": "Political boundaries at 110m resolution."}
+    ],
+    "fields": [
+        { "column": "Production system/sector", "name": "Production System", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Research method", "name": "Research Method", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Study design", "name": "Study Design", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Certification scheme/standard", "name": "Certification Scheme", "datatype": "string", "description": "A proximal or ultimate control"}
+    ]
+}

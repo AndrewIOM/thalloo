@@ -6,7 +6,7 @@
     "pointDisplay": "single",
     "displayUnit": "DisplayUnit",
     "baselayers": [
-        { "file": "world110", "name": "Bioclimate Subzones", "description": "Arctic zonation defined by the Circumpolar Arctic Vegetation Atlas."}
+        { "file": "subzones", "name": "Bioclimate Subzones", "description": "Arctic zonation defined by the Circumpolar Arctic Vegetation Atlas."}
     ],
     "fields": [
         { "column": "Control", "name": "Control", "datatype": "string", "description": "A proximal or ultimate control"},

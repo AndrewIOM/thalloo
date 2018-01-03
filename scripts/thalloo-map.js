@@ -48,7 +48,7 @@ let ThallooMap = (function () {
 
     let redraw = function (rawData) {
         g2.selectAll('g').remove();
-        let pies = generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount);
+        let pies = generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, config.displayUnit);
         if (pies == 0) return;
         if (dataPalette == undefined) {
             d3.json("../map-data/" + mapname + ".palette.json", function (error, palData) {
@@ -107,8 +107,7 @@ function getProjection(name) {
                 .precision(0);
         case "standard":
             return d3.geoMercator()
-                .scale(250)
-                .translate([width / 2, height / 2]);
+                .scale(200);
     }
 }
 
@@ -157,7 +156,7 @@ function loadBaseLayer(layer, g1, path) {
     });
 }
 
-function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount) {
+function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, displayField) {
     if (rawData.length == 0) return;
 
     // Sort data by category, then by display unit
@@ -165,7 +164,7 @@ function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount) {
         _(rawData)
         .chain()
         //.sortBy('Category')
-        .sortBy('DisplayUnit');
+        .sortBy(displayField);
 
     sortedData =
         _(sortedData)
@@ -191,7 +190,7 @@ function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount) {
 
             let catsWithValues =
                 _.reduce(cluster.points, function (controls, point) {
-                    let cat = point.DisplayUnit;
+                    let cat = point[displayField];
                     let existingCat = _.where(controls, {
                         category: cat
                     });
