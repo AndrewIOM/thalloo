@@ -9,8 +9,8 @@ layout: default
     <div class="three columns">
         {% for map in site.maps %}
             <div class="study-preview">
-                <a href="{{ map.url }}">
-                    {% if map.thumbnail %}<img src="{{ map.thumbnail }}" style="width:100%" alt=""/>{% endif %}
+                <a href="{{ site.baseurl }}{{ map.url }}">
+                    {% if map.thumbnail %}<img src="{{ site.baseurl }}{{ map.thumbnail }}" style="width:100%" alt=""/>{% endif %}
                     <p>{{ map.name }}</p>
                 </a>
             </div>

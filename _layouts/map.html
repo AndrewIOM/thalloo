@@ -6,8 +6,8 @@
 <body>
     <div class="container">
         <div class="top-links">
-            <a href="/" target="_blank" class="top-links-right">acm.im</a>            
-            <a href="/">&larr; All Evidence Maps</a>
+            <a href="{{ site.url }}/" target="_blank" class="top-links-right">acm.im</a>            
+            <a href="{{ site.baseurl }}/">&larr; All Evidence Maps</a>
         </div>
         <hr/>
 
@@ -98,8 +98,8 @@
         </div>
 </body>
 
-<script src="/scripts/thalloo-map.js"></script>
-<script src="/scripts/app.js"></script>
+<script src="{{ site.baseurl }}/scripts/thalloo-map.js"></script>
+<script src="{{ site.baseurl }}/scripts/app.js"></script>
 <script>
     var vm = new ThallooViewModel('{{page.mapname}}');
     ko.applyBindings(vm);
