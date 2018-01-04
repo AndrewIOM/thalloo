@@ -206,6 +206,9 @@ function ThallooViewModel(mapname) {
                 let selectedPoints = self.thallooMap.getSelectedPoints();
                 let allFields = _.map(selectedPoints, objectToKeyValue);
                 self.selectedPoints(allFields);
+                $('html, body').animate({
+                    scrollTop: $("#selected").offset().top
+                }, 200);
             });
             self.baselayers(config.baselayers);
             self.title(config.name);
@@ -233,8 +236,10 @@ function ThallooViewModel(mapname) {
                     } else if (field.datatype == "string") {
                         field.options = _.chain(self.rawData)
                             .pluck(field.column)
-                            .map(function(s) {
-                                return _.map(s.split(';'), function(st) { return st.trim(); });
+                            .map(function (s) {
+                                return _.map(s.split(';'), function (st) {
+                                    return st.trim();
+                                });
                             })
                             .flatten()
                             .uniq()
@@ -251,11 +256,18 @@ function ThallooViewModel(mapname) {
 }
 
 function stringPresentInSemicolonList(list, str) {
-    let x = _.map(list.split(';'), function(st) { return st.trim(); });
-    return _.contains(x,str);
+    let x = _.map(list.split(';'), function (st) {
+        return st.trim();
+    });
+    return _.contains(x, str);
 }
 
 function objectToKeyValue(o) {
     let keys = Object.keys(o);
-    return _.map(keys, function(k) { return {key: k, value: o[k]}; });
+    return _.map(keys, function (k) {
+        return {
+            key: k,
+            value: o[k]
+        };
+    });
 }

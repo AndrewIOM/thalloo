@@ -50,16 +50,16 @@ function ThallooMap(svgId, config, mapname) {
     
         var arc = d3.arc()
             .outerRadius(function (d) {
-                return d.data.radius;
+                return d.data.radius / zoomLevel;
             })
             .innerRadius(0);
     
         var arcOuter = d3.arc() //(This is the outline for the pie chart)
             .innerRadius(function (d) {
-                return d.data.radius;
+                return d.data.radius / zoomLevel;
             })
             .outerRadius(function (d) {
-                return d.data.radius + 1;
+                return (d.data.radius + 1) / zoomLevel;
             });
 
         var points = g2.selectAll('g')
