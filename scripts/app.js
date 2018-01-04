@@ -90,6 +90,7 @@ function ThallooViewModel(mapname) {
     self.title = ko.observable();
     self.description = ko.observable();
     self.publication = ko.observable();
+    self.displayUnit = ko.observable();
     self.baselayers = ko.observableArray();
 
     self.filters = ko.observableArray();
@@ -104,7 +105,10 @@ function ThallooViewModel(mapname) {
     self.stashedFilters = ko.observableArray();
     self.stashedSlices = ko.observableArray();
 
+    self.selectedPoints = ko.observableArray();
+
     self.palette = ko.observable();
+    self.thallooMap = undefined;
 
     self.stashFilter = function () {
         self.stashedFilters.push({
@@ -156,9 +160,7 @@ function ThallooViewModel(mapname) {
                 });
         });
 
-        // Slice data by stashed slices
-        console.log(filteredAndSlicedData);
-        ThallooMap.callRedraw(filteredAndSlicedData, self.config);
+        self.thallooMap.redraw(filteredAndSlicedData);
     };
 
     self.removeFilter = function (filter) {
@@ -199,11 +201,17 @@ function ThallooViewModel(mapname) {
         self.rawData = rawData;
         $.getJSON("../map-data/" + mapname + ".json", function (config) {
             self.config = config;
-            ThallooMap.callInit("map", config, mapname);
+            self.thallooMap = new ThallooMap("map", config, mapname);
+            $(self.thallooMap).on(ThallooMap.EVENT_SELECTED_POINTS, function () {
+                let selectedPoints = self.thallooMap.getSelectedPoints();
+                let allFields = _.map(selectedPoints, objectToKeyValue);
+                self.selectedPoints(allFields);
+            });
             self.baselayers(config.baselayers);
             self.title(config.name);
             self.description(config.description);
             self.publication(config.publication);
+            self.displayUnit(config.displayUnit);
             $('#study-publication').val(config.publication);
             _(config.fields)
                 .map(function (field) {
@@ -245,4 +253,9 @@ function ThallooViewModel(mapname) {
 function stringPresentInSemicolonList(list, str) {
     let x = _.map(list.split(';'), function(st) { return st.trim(); });
     return _.contains(x,str);
+}
+
+function objectToKeyValue(o) {
+    let keys = Object.keys(o);
+    return _.map(keys, function(k) { return {key: k, value: o[k]}; });
 }

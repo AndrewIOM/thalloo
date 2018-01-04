@@ -8,7 +8,14 @@
 /// Thalloo MapView Component
 ///////////////////////////////
 
-let ThallooMap = (function () {
+/**
+ * Creates a new slide image canvas - allows panning and zooming, and ensures the slide is always visible
+ * @param {String} svgId            the parent svg elements's id
+ * @param {Object} config           a configuration file 
+ * @param {String} mapname          the short name of the map that is used for the data files
+ */
+function ThallooMap(svgId, config, mapname) {
+    let self = this;
 
     // Static Configuration
     let displayPointsAs = 'cluster'; // TODO Are all of these required
@@ -16,71 +23,120 @@ let ThallooMap = (function () {
     let height = 800;
     let aggregationDistance = 150;
     let numberOfPoints = 3;
-    let maxControlCount = 110;
-
-    // D3 Variables
-    let svg, raster, vector, g1, g2;
-    let projection, zoom, zoomLevel, path;
+    let maxControlCount = 15; //TODO set dynamically
 
     // Data
-    let config;
-    let mapname;
     let dataPalette;
+    let selectedPoints = [];
 
-    let init = function (svgId, c, mn) {
-        config = c;
-        mapname = mn;
-        svg = d3.select("#" + svgId);
-        raster = svg.append("g");
-        vector = svg.append("g");
-        g1 = vector.append("g"); // background
-        g2 = vector.append("g"); // pie charts    
-        projection = getProjection(config.projection);
-        zoom = d3.zoom()
-            .scaleExtent([1, 4])
-            .on("zoom", zoomed);
-        zoomLevel = 1;
-        path = d3.geoPath()
-            .projection(projection);
-
-        loadBaseLayers(config.baselayers, g1, path);
+    self.zoomed = function() {
+        var transform = d3.event.transform;
+        vector.style("stroke-width", 1.5 / d3.event.transform.k + "px");
+        vector.attr("transform", d3.event.transform);
+        if (zoomLevel != d3.event.transform.k) {
+            zoomLevel = d3.event.transform.k;
+            self.redraw(self.currentData);
+        }
     };
 
-    let redraw = function (rawData) {
+
+    self.displayPies = function(clusteredDataPies, g2, projection, dataPalette, pieDisplayUnit) {
+
+        var pie = d3.pie()
+            .value(function (cat) {
+                return cat.value;
+            })
+            .sort(null);
+    
+        var arc = d3.arc()
+            .outerRadius(function (d) {
+                return d.data.radius;
+            })
+            .innerRadius(0);
+    
+        var arcOuter = d3.arc() //(This is the outline for the pie chart)
+            .innerRadius(function (d) {
+                return d.data.radius;
+            })
+            .outerRadius(function (d) {
+                return d.data.radius + 1;
+            });
+
+        var points = g2.selectAll('g')
+            .data(clusteredDataPies)
+            .enter()
+            .append('g')
+            .attr("transform", function (d) {
+                return "translate(" + projection([d.centroid.geometry.coordinates[0], d.centroid.geometry.coordinates[1]]) + ")";
+            })
+            .attr("class", "pies marker")
+            .on("click", function(d) { 
+                self.selectedPoints = d.dataPoints;
+                $(self).trigger(ThallooMap.EVENT_SELECTED_POINTS);
+            });
+
+        points.selectAll('path')
+            .data(function (d) {
+                return pie(d.categories);
+            })
+            .enter()
+            .append('path')
+            .attr('d', arc)
+            .attr('fill', function (d, i) {
+                if (dataPalette != undefined) { return '#' + getDataColour(d.data.category, dataPalette[pieDisplayUnit]); }
+                else { return 'black'; }
+            });
+
+        points.selectAll('path.outline')
+            .data(function (d) {
+                return pie(d.categories);
+            })
+            .enter()
+            .append('path')
+            .attr('d', arcOuter)
+            .attr('fill', 'black');
+    }
+
+    self.redraw = function (rawData) {
+        self.currentData = rawData;
         g2.selectAll('g').remove();
         let pies = generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, config.displayUnit);
         if (pies == 0) return;
         if (dataPalette == undefined) {
             d3.json("../map-data/" + mapname + ".palette.json", function (error, palData) {
                 dataPalette = palData;
-                displayPies(pies, g2, projection, dataPalette, config.displayUnit);
+                drawCategoricalLegend(dataPalette, config.displayUnit, "symbology");
+                self.displayPies(pies, g2, projection, dataPalette, config.displayUnit);
                 svg.call(zoom);
-            });        
+            });
         } else {
-            displayPies(pies, g2, projection, dataPalette, config.displayUnit);
+            self.displayPies(pies, g2, projection, dataPalette, config.displayUnit);
             svg.call(zoom);
         }
     };
 
-    let zoomed = function() {
-        var transform = d3.event.transform;
-        vector.style("stroke-width", 1.5 / d3.event.transform.k + "px");
-        vector.attr("transform", d3.event.transform);
-        if (zoomLevel != d3.event.transform.k) {
-            zoomLevel = d3.event.transform.k;
-        }
+    self.getSelectedPoints = function() {
+        return self.selectedPoints;
     };
 
-    return {
-        callInit: function (svgId, config, mapname) {
-            init(svgId, config, mapname);
-        },
-        callRedraw: function (rawData) {
-            redraw(rawData);
-        }
-    };
+    // Initialise Map
+    let svg = d3.select("#" + svgId);
+    let raster = svg.append("g");
+    let vector = svg.append("g");
+    let g1 = vector.append("g"); // background
+    let g2 = vector.append("g"); // pie charts    
+    let projection = getProjection(config.projection);
+    let zoom = d3.zoom()
+        .scaleExtent([1, 4])
+        .on("zoom", self.zoomed);
+    let zoomLevel = 1;
+    let path = d3.geoPath()
+        .projection(projection);
 
-})();
+    loadBaseLayers(config.baselayers, g1, path);
+}
+
+ThallooMap.EVENT_SELECTED_POINTS = 'selectedPoints';
 
 ///////////////////////////////
 /// Static Helper Functions
@@ -96,6 +152,37 @@ let getDataColour = function (controlName, dataPalette) {
     return match.hex;
 };
 
+function drawCategoricalLegend(palette, displayUnit, svgId) {
+    let svg = d3.select('#' + svgId);
+    let domain = _.map(palette[displayUnit], function(d) { return d.name; });
+    let range = _.map(palette[displayUnit], function(d) { return d.name; });
+    let height = range.length * 17.5;
+    let buffer = 6;
+    svg.attr('height', height);
+
+	let y = d3.scaleBand()
+        .domain(domain)
+        .range([buffer,height+buffer]);
+
+    svg.append("g")
+            .selectAll('circle')
+            .data(palette[displayUnit]).enter()
+            .append('circle')
+            .attr('cx', 6)
+            .attr('cy', function(d) { return 6 + y(d.name)})
+            .attr('r', 5)
+            .attr('stroke', 'black')
+            .attr('fill', function(d) { return '#' + d.hex; });
+
+    svg.append("g")
+            .selectAll('text')
+            .data(palette[displayUnit]).enter()
+            .append('text')
+            .attr('x', 15)
+            .attr('y', function(d) { return 10 + y(d.name)})
+            .text(function(d) { return d.name; });
+}
+
 function getProjection(name) {
     switch (name) {
         case "arctic":
@@ -107,6 +194,7 @@ function getProjection(name) {
                 .precision(0);
         case "standard":
             return d3.geoMercator()
+                .center([10,30])
                 .scale(200);
     }
 }
@@ -232,64 +320,12 @@ function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, di
             return {
                 centroid: cluster.centroid,
                 categories: catsWithValues,
-                total: total
+                total: total,
+                dataPoints: cluster.points
             };
         });
 
     return clusteredDataPies;
-}
-
-function displayPies(clusteredDataPies, g2, projection, dataPalette, pieDisplayUnit) {
-
-    var pie = d3.pie()
-        .value(function (cat) {
-            return cat.value;
-        })
-        .sort(null);
-
-    var arc = d3.arc()
-        .outerRadius(function (d) {
-            return d.data.radius;
-        })
-        .innerRadius(0);
-
-    var arcOuter = d3.arc() //(This is the outline for the pie chart)
-        .innerRadius(function (d) {
-            return d.data.radius;
-        })
-        .outerRadius(function (d) {
-            return d.data.radius + 1;
-        });
-
-    var points = g2.selectAll('g')
-        .data(clusteredDataPies)
-        .enter()
-        .append('g')
-        .attr("transform", function (d) {
-            return "translate(" + projection([d.centroid.geometry.coordinates[0], d.centroid.geometry.coordinates[1]]) + ")";
-        })
-        .attr("class", "pies");
-    
-    points.selectAll('path')
-        .data(function (d) {
-            return pie(d.categories);
-        })
-        .enter()
-        .append('path')
-        .attr('d', arc)
-        .attr('fill', function (d, i) {
-            if (dataPalette != undefined) { return '#' + getDataColour(d.data.category, dataPalette[pieDisplayUnit]); }
-            else { return 'black'; }
-        });
-
-    points.selectAll('path.outline')
-        .data(function (d) {
-            return pie(d.categories);
-        })
-        .enter()
-        .append('path')
-        .attr('d', arcOuter)
-        .attr('fill', 'black');
 }
 
 ///////////////////////////////

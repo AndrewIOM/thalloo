@@ -12,6 +12,7 @@
         <hr/>
 
         <h1 id="study-name" data-bind="text: title">Loading...<br/><small id="study-publication"></small></h1>
+        <span class="heading-description" data-bind="text: description"></span>
         <hr/>
         <div class="row">
             <div class="nine columns">
@@ -49,9 +50,21 @@
                     </tbody>
                 </table>
 
+                <!-- Selected Point(s) -->
+                <div data-bind="if: selectedPoints().length > 0">
+                        <h3><span data-bind="text: selectedPoints().length"></span> Selected</h3>
+                        <ul data-bind="foreach: selectedPoints" class="card-list">
+                            <li data-bind="foreach: $data">
+                                <dl style="margin-bottom:0">
+                                    <dt style="width: 30%;display: inline-block;font-weight: bold;" data-bind="text: key"></dt>
+                                    <dd style="width: 50%;display: inline-block;" data-bind="text: value"></dd>
+                                </dl>
+                            </li>
+                        </ul>
+                    </div>
+
             </div>
             <div class="three columns">
-                <p data-bind="text: description"></p>
                 {{ content }}
             
                 <p data-bind="text: publication"></p>
@@ -86,6 +99,12 @@
                                    selectedOptions: selectedFilters"></select>
                     <button>Stash Filter</button>
                 </form>
+
+                <div>
+                    <h3>Symbology</h3>
+                    <strong data-bind="text: displayUnit"></strong>
+                    <svg id="symbology"></svg>
+                </div>
 
                 <div id="details-panel" data-bind="visible: baselayers().length > 0">
                     <h3>Base Layers</h3>

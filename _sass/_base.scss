@@ -169,3 +169,18 @@ padding-left:1em;
 .study-preview {
     text-align: center;
 }
+
+.card-list {
+
+    list-style: none;
+
+    li {
+        border: 2px solid lightgrey;
+        padding: 2em;    
+    }
+}
+
+.heading-description {
+    text-align: center;
+    display: block;
+}
