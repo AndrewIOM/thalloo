@@ -154,10 +154,9 @@ function ThallooViewModel(mapname) {
         }
 
         self.stashedFilters().forEach(function (f) {
-            let filterValues = f.split(',');
             filteredAndSlicedData =
                 _.filter(filteredAndSlicedData, function (dp) {
-                    return f.value == dp[f.name];
+                    return _.contains(f.value, dp[f.name]);
                 });
         });
 
