@@ -1,5 +1,5 @@
 {
-    "Production system/sector": [
+    "Production System/Sector": [
         { "name": "Aquaculture", "hex": "015ce6" },
         { "name": "Cereals", "hex": "ff2fc5" },
         { "name": "Cocoa", "hex": "ff2501" },

@@ -4,14 +4,18 @@
     "publication": "Awaiting Publication",
     "projection": "standard",
     "pointDisplay": "single",
-    "displayUnit": "Production system/sector",
+    "displayUnit": "Production System/Sector",
     "baselayers": [
         { "file": "world110", "name": "Countries", "description": "Political boundaries at 110m resolution."}
     ],
     "fields": [
-        { "column": "Production system/sector", "name": "Production System", "datatype": "string", "description": "A proximal or ultimate control"},
-        { "column": "Research method", "name": "Research Method", "datatype": "string", "description": "A proximal or ultimate control"},
-        { "column": "Study design", "name": "Study Design", "datatype": "string", "description": "A proximal or ultimate control"},
-        { "column": "Certification scheme/standard", "name": "Certification Scheme", "datatype": "string", "description": "A proximal or ultimate control"}
+        { "column": "Production System/Sector", "name": "Production System/Sector", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Commodity", "name": "Commodity", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Country", "name": "Country", "datatype": "string", "description": "Country"},
+        { "column": "Research Method", "name": "Research Method", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Study Design", "name": "Study Design", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Certification Standard", "name": "Certification Standard", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Position in Supply Chain", "name": "Position in Supply Chain", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Publication Date", "name": "Publication Year", "datatype": "float", "description": "Year of publication"}
     ]
 }

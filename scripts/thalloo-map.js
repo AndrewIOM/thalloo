@@ -19,8 +19,8 @@ function ThallooMap(svgId, config, mapname) {
 
     // Static Configuration
     let displayPointsAs = 'cluster'; // TODO Are all of these required
-    let width = 800;
-    let height = 800;
+    let width = $('#' + svgId).width();
+    let height = $('#' + svgId).height();
     let aggregationDistance = 150;
     let numberOfPoints = 3;
     let maxControlCount = 15; //TODO set dynamically
@@ -121,6 +121,14 @@ function ThallooMap(svgId, config, mapname) {
 
     // Initialise Map
     let svg = d3.select("#" + svgId);
+
+    svg.attr("width", '100%')
+       .attr("height", '100%')
+       .attr('viewBox','0 0 '+Math.min(width,height)+' '+Math.min(width,height))
+       .attr('preserveAspectRatio','xMinYMin')
+       .append("g")
+       .attr("transform", "translate(" + Math.min(width,height) / 2 + "," + Math.min(width,height) / 2 + ")");
+
     let raster = svg.append("g");
     let vector = svg.append("g");
     let g1 = vector.append("g"); // background
@@ -245,7 +253,7 @@ function loadBaseLayer(layer, g1, path) {
 }
 
 function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, displayField) {
-    if (rawData.length == 0) return;
+    if (rawData.length == 0) return [];
 
     // Sort data by category, then by display unit
     let sortedData =
@@ -333,7 +341,7 @@ function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, di
 ///////////////////////////////
 
 function cluster(points, searchDistance) {
-    let cool = 0;
+    let diagnosticCount = 0;
     let clusterRecursive = function (remainingPoints, clusters) {
         let currentPoint = {
             "type": "Feature",
@@ -379,8 +387,10 @@ function cluster(points, searchDistance) {
         clusters.push(newCluster);
 
         let pointsMinusCluster = _.difference(remainingPoints, nearby);
-        cool++;
-        if (cool > 10000) {
+        diagnosticCount++;
+        if (diagnosticCount > 1000) {
+            console.log(clusters);
+            console.log(pointsMinusCluster);
             return clusters;
         }
         if (pointsMinusCluster.length > 0) {

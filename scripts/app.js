@@ -154,6 +154,7 @@ function ThallooViewModel(mapname) {
         }
 
         self.stashedFilters().forEach(function (f) {
+            let filterValues = f.split(',');
             filteredAndSlicedData =
                 _.filter(filteredAndSlicedData, function (dp) {
                     return f.value == dp[f.name];
@@ -199,6 +200,17 @@ function ThallooViewModel(mapname) {
     // Load app state
     d3.tsv("../map-data/" + mapname + ".txt", function (error, rawData) {
         self.rawData = rawData;
+
+        // Split out 'LatDD,LonDD' column into 'LatDD' and 'LonDD' programatically
+        if (self.rawData[0]['LatDD,LonDD'] != undefined) {
+            self.rawData = _(self.rawData)
+                .chain()
+                .map(unstackLatLon)
+                .flatten()
+                .value();
+        }
+        console.log(self.rawData);
+
         $.getJSON("../map-data/" + mapname + ".json", function (config) {
             self.config = config;
             self.thallooMap = new ThallooMap("map", config, mapname);
@@ -270,4 +282,20 @@ function objectToKeyValue(o) {
             value: o[k]
         };
     });
+}
+
+/// Where a data row contains a field 'LatDD,LonDD' of one or many coordinates,
+/// this function returns an array of data rows, containing duplicated data,
+/// one row per coordinate.
+function unstackLatLon(dataRow) {
+    return _(dataRow['LatDD,LonDD'].split(';'))
+            .chain()
+            .map(function(d) { return d.split(','); })
+            .filter(function(d) { return d.length == 2; })
+            .map(function(d) {
+                let originalRow = dataRow;
+                let newProps = { LatDD: d[0].trim(), LonDD: d[1].trim() };
+                return jQuery.extend(originalRow, newProps);
+            })
+            .value();
 }
