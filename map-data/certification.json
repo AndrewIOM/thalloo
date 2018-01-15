@@ -6,7 +6,7 @@
     "pointDisplay": "single",
     "displayUnit": "Production System/Sector",
     "baselayers": [
-        { "file": "world110", "name": "Countries", "description": "Political boundaries at 110m resolution."}
+        { "file": "world50", "name": "Countries", "description": "Political boundaries at 50m resolution."}
     ],
     "fields": [
         { "column": "Production System/Sector", "name": "Production System/Sector", "datatype": "string", "description": "A proximal or ultimate control"},
