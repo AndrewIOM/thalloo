@@ -208,7 +208,6 @@ function ThallooViewModel(mapname) {
                 .flatten()
                 .value();
         }
-        console.log(self.rawData);
 
         $.getJSON("../map-data/" + mapname + ".json", function (config) {
             self.config = config;
