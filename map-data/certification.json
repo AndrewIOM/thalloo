@@ -16,6 +16,27 @@
         { "column": "Study Design", "name": "Study Design", "datatype": "string", "description": "A proximal or ultimate control"},
         { "column": "Certification Standard", "name": "Certification Standard", "datatype": "string", "description": "A proximal or ultimate control"},
         { "column": "Position in Supply Chain", "name": "Position in Supply Chain", "datatype": "string", "description": "A proximal or ultimate control"},
+
+        { "column": "Education", "name": "Education", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Poverty", "name": "Poverty", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Nutrition", "name": "Nutrition", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Gender", "name": "Gender", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Health and Safety", "name": "Health and Safety", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Wellbeing", "name": "Wellbeing", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Community Benefits and Development", "name": "Community Benefits and Development", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Knowledge Exchange", "name": "Knowledge Exchange", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Transparency", "name": "Transparency", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Price Premium", "name": "Price Premium", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Costs", "name": "Costs", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Market Advantage", "name": "Market Advantage", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Yield", "name": "Yield", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Financial Security", "name": "Financial Security", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Deforestation", "name": "Deforestation", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Conservation and Biodiversity", "name": "Conservation and Biodiversity", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Good Production Practices", "name": "Good Production Practices", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Pollution", "name": "Pollution", "datatype": "string", "description": "A proximal or ultimate control"},
+        { "column": "Input Use", "name": "Input Use", "datatype": "string", "description": "A proximal or ultimate control"},
+
         { "column": "Publication Date", "name": "Publication Year", "datatype": "float", "description": "Year of publication"}
     ]
 }
