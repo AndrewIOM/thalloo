@@ -23,7 +23,7 @@ function ThallooMap(svgId, config, mapname) {
     let height = $('#' + svgId).height();
     let aggregationDistance = 150;
     let numberOfPoints = 3;
-    let maxControlCount = 15; //TODO set dynamically
+    let maxControlCount = config.maxPieSize;
 
     // Data
     let dataPalette;
@@ -202,8 +202,8 @@ function getProjection(name) {
                 .precision(0);
         case "standard":
             return d3.geoMercator()
-                .center([10,30])
-                .scale(200);
+                .center([45,45])
+                .scale(150);
     }
 }
 

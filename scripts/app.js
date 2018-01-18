@@ -252,6 +252,7 @@ function ThallooViewModel(mapname) {
                                 });
                             })
                             .flatten()
+                            .filter(function(d) { return d != '';})
                             .uniq()
                             .sortBy(function (i) {
                                 return i.toLowerCase();

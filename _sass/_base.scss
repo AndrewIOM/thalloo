@@ -1,11 +1,19 @@
 body {
-    font-family: 'Georgia', sans-serif;
+    font-family: 'Georgia', serif !important;
     margin: 0;
 }
 
 h1 {
     font-size: 2em;
     text-align: center;
+}
+
+h3 {
+    font-size: 3rem !important;
+}
+
+#study-name {
+    font-size: 4rem;
 }
 
 .top-links {
@@ -47,6 +55,7 @@ header {
 #map {
   width: 100%;
   height: 600px;
+  cursor: grab;
 }
 
 .marker {
