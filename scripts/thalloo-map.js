@@ -100,7 +100,7 @@ function ThallooMap(svgId, config, mapname) {
     self.redraw = function (rawData) {
         self.currentData = rawData;
         g2.selectAll('g').remove();
-        let pies = generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, config.displayUnit);
+        let pies = generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, config.clusterDistance, config.displayUnit);
         if (pies == 0) return;
         if (dataPalette == undefined) {
             d3.json("../map-data/" + mapname + ".palette.json", function (error, palData) {
@@ -133,7 +133,7 @@ function ThallooMap(svgId, config, mapname) {
     let vector = svg.append("g");
     let g1 = vector.append("g"); // background
     let g2 = vector.append("g"); // pie charts    
-    let projection = getProjection(config.projection);
+    let projection = getProjection(config.projection, config.mapCentre, config.mapZoomLevel);
     let zoom = d3.zoom()
         .scaleExtent([1, 4])
         .on("zoom", self.zoomed);
@@ -192,19 +192,21 @@ function drawCategoricalLegend(palette, displayUnit, svgId) {
             .text(function(d) { return d.name; });
 }
 
-function getProjection(name) {
+function getProjection(name, centre, zoomLevel) {
+    if (zoomLevel == undefined) zoomLevel = 1;
+    if (centre == undefined) centre = [45,45];
     switch (name) {
         case "arctic":
             return d3.geoOrthographic()
-                .scale(600)
+                .scale(600 * zoomLevel)
                 .translate([500, 350])
                 .clipAngle(90)
                 .rotate([0, -90])
                 .precision(0);
         case "standard":
             return d3.geoMercator()
-                .center([45,45])
-                .scale(150);
+                .center(centre)
+                .scale(zoomLevel * 150);
     }
 }
 
@@ -253,7 +255,7 @@ function loadBaseLayer(layer, g1, path) {
     });
 }
 
-function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, displayField) {
+function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, maxClusterDistance, displayField) {
     if (rawData.length == 0) return [];
 
     // Sort data by category, then by display unit
@@ -271,7 +273,7 @@ function generatePieData(rawData, zoomLevel, numberOfPoints, maxControlCount, di
         ._wrapped;
 
     // Zoom level is between one (= 150km aggregation) and four (=1km)
-    let currentAggregationDistance = 250 - (((zoomLevel - 1) / (4 - 1)) * (250 - 1));
+    let currentAggregationDistance = maxClusterDistance - (((zoomLevel - 1) / (4 - 1)) * (maxClusterDistance - 1));
     let clusteredData = cluster(sortedData, currentAggregationDistance, numberOfPoints);
 
     let pieScale =
@@ -349,7 +351,7 @@ function cluster(points, searchDistance) {
             "properties": remainingPoints[0],
             "geometry": {
                 "type": "Point",
-                "coordinates": [parseInt(remainingPoints[0].LonDD), parseInt(remainingPoints[0].LatDD)]
+                "coordinates": [parseFloat(remainingPoints[0].LonDD), parseFloat(remainingPoints[0].LatDD)]
             }
         };
         let nearby =
@@ -359,10 +361,9 @@ function cluster(points, searchDistance) {
                     "properties": dataPoint,
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [parseInt(dataPoint.LonDD), parseInt(dataPoint.LatDD)]
+                        "coordinates": [parseFloat(dataPoint.LonDD), parseFloat(dataPoint.LatDD)]
                     }
                 };
-
                 let distance = turf.distance(currentPoint, turfTo, "kilometers");
                 return distance < searchDistance;
             });

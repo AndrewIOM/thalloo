@@ -1,0 +1,8 @@
+{
+    "Vernacular, Traditional, or Pre-1920 Building": [
+        { "name": "TRUE", "hex": "ff2501" },
+        { "name": "FALSE", "hex": "E5E5E5" },
+        { "name": "No Data Online", "hex": "2D2D2D" },
+        { "name": "NOT ENOUGH INFORMATION", "hex": "FB8C54"}
+    ]
+}

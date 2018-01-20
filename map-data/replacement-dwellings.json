@@ -1,0 +1,29 @@
+{
+    "name": "Demolition of Traditional Buildings in the Manx Countryside",
+    "description": "An evidence-based assessment of the Isle of Man's 'Replacement Dwelling' policy, including its implementation.",
+    "publication": "",
+    "projection": "standard",
+    "pointDisplay": "single",
+    "mapCentre": [ -4.6, 54.25],
+    "mapZoomLevel": 300,
+    "clusterDistance": 1,
+    "displayUnit": "Vernacular, Traditional, or Pre-1920 Building",
+    "maxPieSize": 10,
+    "baselayers": [
+        { "file": "iom-local-authorities", "name": "Local Authorities", "description": "Isle of Man local authorities. Data source: Isle of Man Government."}
+    ],
+    "fields": [
+        { "column": "Vernacular, Traditional, or Pre-1920 Building", "name": "Vernacular, Traditional, or Pre-1920 Building?", "datatype": "string", "description": "Where the planning officer's report did not sufficiently describe the property, this is marked as 'not enough information'."},
+        { "column": "Recommended Permitted", "name": "Recommended by Case Officer", "datatype": "string", "description": "Did the planning officer's report recommend this development for approval?"},
+        { "column": "High Landscape Value (1982)", "name": "Area of High Landscape Value", "datatype": "string", "description": "Areas of High Landscape Value are defined in the 1982 IOM Development Plan."},
+        { "column": "Housing Policy 12", "name": "Was Housing Policy 12 included for assessment?", "datatype": "string", "description": "This policy applies to all replacement dwellings. It protects buildings of historic or architectural interest from demolition."},
+        { "column": "Housing Policy 13", "name": "Was Housing Policy 13 included for assessment?", "datatype": "string", "description": "Did the planning officer's report recommend this development for approval?"},
+        { "column": "Housing Policy 14", "name": "Was Housing Policy 14 included for assessment?", "datatype": "string", "description": "Did the planning officer's report recommend this development for approval?"},
+        { "column": "Land Designation", "name": "Land Designation", "datatype": "string", "description": "If the case officer did not describe the existing dwelling sufficiently, this is indicated."},
+        { "column": "Is Countryside", "name": "Countryside", "datatype": "string", "description": "If the case officer did not describe the existing dwelling sufficiently, this is indicated."},
+        { "column": "Plan Used", "name": "Plan Used", "datatype": "string", "description": "If the case officer did not describe the existing dwelling sufficiently, this is indicated."},
+        { "column": "Case Officer", "name": "Case Officer", "datatype": "string", "description": "If the case officer did not describe the existing dwelling sufficiently, this is indicated."},
+        { "column": "Same Countersignatory", "name": "Same Countersignatory?", "datatype": "string", "description": "Was the recommendation countersigned by another individual before a decision was made?"},
+        { "column": "Percent Original Floor Area", "name": "Floor Area: Percentage Increase", "datatype": "float", "unit": "years", "description": ""}
+    ]
+}

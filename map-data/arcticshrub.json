@@ -6,6 +6,7 @@
     "pointDisplay": "single",
     "displayUnit": "DisplayUnit",
     "maxPieSize": 110,
+    "clusterDistance": 250,
     "baselayers": [
         { "file": "subzones", "name": "Bioclimate Subzones", "description": "Arctic zonation defined by the Circumpolar Arctic Vegetation Atlas."}
     ],
