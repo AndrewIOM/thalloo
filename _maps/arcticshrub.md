@@ -1,5 +1,5 @@
 ---
-name: Controls on Arctic Shrub Growth and Expansion
+name: "Shrub growth and expansion in the Arctic tundra"
 mapname: arcticshrub
 layout: map
 ---

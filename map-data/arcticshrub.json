@@ -1,6 +1,6 @@
 {
-    "name": "Controls on Arctic Shrub Growth and Expansion",
-    "description": "This is a map showing spatial gaps.",
+    "name": "Shrub growth and expansion in the Arctic tundra",
+    "description": "An assessment of controlling factors using an evidence-based approach",
     "publication": "Martin et al (2017)",
     "projection": "arctic",
     "pointDisplay": "single",

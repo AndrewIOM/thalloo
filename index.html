@@ -6,14 +6,14 @@ layout: default
 <hr/>
 
 <div class="row">
+    {% for map in site.maps %}
     <div class="three columns">
-        {% for map in site.maps %}
             <div class="study-preview">
                 <a href="{{ site.baseurl }}{{ map.url }}">
-                    {% if map.thumbnail %}<img src="{{ site.baseurl }}{{ map.thumbnail }}" style="width:100%" alt=""/>{% endif %}
+                    <img src="{{ site.baseurl }}/map-data/{{ map.mapname }}.thumb.jpg" style="width:100%" alt="{{ map.mapname }}"/>
                     <p>{{ map.name }}</p>
                 </a>
             </div>
-        {% endfor %}
     </div>
+    {% endfor %}
 </div>

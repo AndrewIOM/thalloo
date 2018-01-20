@@ -161,6 +161,7 @@ let getDataColour = function (controlName, dataPalette) {
 };
 
 function drawCategoricalLegend(palette, displayUnit, svgId) {
+    $("#" + svgId).empty();
     let svg = d3.select('#' + svgId);
     let domain = _.map(palette[displayUnit], function(d) { return d.name; });
     let range = _.map(palette[displayUnit], function(d) { return d.name; });

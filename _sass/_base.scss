@@ -24,6 +24,15 @@ h3 {
     float: right;
 }
 
+.study-preview {
+    img {
+        width: 100%;
+        height: 12em;
+        object-fit: cover;
+        border: 0.5px solid lightgrey;
+    }
+}
+
 header {
     height: 4em;
     padding: 1em;
@@ -36,7 +45,7 @@ header {
 }
 
 .header-logo {
-    float:right;
+    float: right;
 }
 
 .header-logo img {
@@ -47,15 +56,14 @@ header {
     max-width: 1400px !important;
 }
 
-
 .mapBackground {
     background-color: lightcyan;
 }
 
 #map {
-  width: 100%;
-  height: 600px;
-  cursor: grab;
+    width: 100%;
+    height: 600px;
+    cursor: grab;
 }
 
 .marker {
@@ -72,96 +80,104 @@ header {
 }
 
 #tip {
-    height:400px;
-    width:40%;
+    height: 400px;
+    width: 40%;
     min-width: 200px;
-    position:absolute;
-    background-color:white;
+    position: absolute;
+    background-color: white;
 }
 
 #tip .dl-horizontal {
-    height:85%;
-    overflow-x:hidden;
-    overflow-y:scroll;
+    height: 85%;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .overlay {
-  fill: none;
-  pointer-events: all;
+    fill: none;
+    pointer-events: all;
 }
 
 #details-pane {
-    height:200px;
+    height: 200px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
+
 /* Layout */
+
 body {
-    height:100vh;
-margin-bottom: 0 !important;
+    height: 100vh;
+    margin-bottom: 0 !important;
 }
 
 .full-screen-content {
     position: relative;
-    height:100%;
+    height: 100%;
 }
 
-.filter-panel {
-}
+.filter-panel {}
 
 .float-right {
     position: absolute;
-    top:2em;
-    right:1em;
-    width:30%;
+    top: 2em;
+    right: 1em;
+    width: 30%;
 }
 
 .details-panel {
-    width:100%;
-    overflow-x:hidden;
-    overflow-y:scroll;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
     border-radius: 0;
 }
 
-.details-panel .panel-heading, .filter-panel .panel-heading {
+.details-panel .panel-heading,
+.filter-panel .panel-heading {
     background-color: #621c46;
-color: white;
+    color: white;
 }
 
+
 /* Collapsable Panels */
+
 .panel-heading span {
     margin-top: -20px;
     font-size: 15px;
 }
+
 .row {
     margin-top: 40px;
     padding: 0 10px;
 }
+
 .clickable {
     cursor: pointer;
-}    
+}
+
 
 /* OxLEL Banner and Footer */
+
 .top-bar {
     height: 4em;
-padding: 0.4em;
-background-image: url('https://oxlel.zoo.ox.ac.uk/wp-content/uploads/2016/04/topbannerright.jpg');
-background-size: 1000px;
-background-repeat: no-repeat;
-background-position: right;
-background-color: #52183a;
-color: #FFF;
+    padding: 0.4em;
+    background-image: url('https://oxlel.zoo.ox.ac.uk/wp-content/uploads/2016/04/topbannerright.jpg');
+    background-size: 1000px;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: #52183a;
+    color: #FFF;
 }
 
 .top-bar .container {
-    height:100%;
+    height: 100%;
 }
 
 .top-bar-logo {
-        height: 100%;
+    height: 100%;
     vertical-align: top;
-    max-width:100%;
+    max-width: 100%;
 }
 
 .top-bar-title {
@@ -170,9 +186,9 @@ color: #FFF;
 
 .top-bar-title h3 {
     font-weight: 300;
-margin-bottom: 0;
-margin-top:0.5em;
-padding-left:1em;
+    margin-bottom: 0;
+    margin-top: 0.5em;
+    padding-left: 1em;
 }
 
 .study-preview {
@@ -180,12 +196,10 @@ padding-left:1em;
 }
 
 .card-list {
-
     list-style: none;
-
     li {
         border: 2px solid lightgrey;
-        padding: 2em;    
+        padding: 2em;
     }
 }
 
