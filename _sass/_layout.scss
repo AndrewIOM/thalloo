@@ -1,0 +1,12 @@
+// Full-Screen Layout
+body.fullscreen {
+    .container {
+        width:100%;
+    }
+
+    .fullscreen-header {
+        font-size: 1.2em;
+        padding: 1em;
+        background-color: darkgrey;
+    }
+}

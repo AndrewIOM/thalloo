@@ -18,10 +18,9 @@ function ThallooMap(svgId, config, mapname) {
     let self = this;
 
     // Static Configuration
-    let displayPointsAs = 'cluster'; // TODO Are all of these required
+    let displayPointsAs = 'cluster';
     let width = $('#' + svgId).width();
     let height = $('#' + svgId).height();
-    let aggregationDistance = 150;
     let numberOfPoints = 3;
     let maxControlCount = config.maxPieSize;
 
@@ -119,6 +118,14 @@ function ThallooMap(svgId, config, mapname) {
         return self.selectedPoints;
     };
 
+    self.zoomIn = function() {
+        zoom.scaleBy(svg.transition().duration(750), 1.3);    
+    };
+
+    self.zoomOut = function() {
+        zoom.scaleBy(svg.transition().duration(750), 1 / 1.3);  
+    };
+
     // Initialise Map
     let svg = d3.select("#" + svgId);
 
@@ -136,6 +143,7 @@ function ThallooMap(svgId, config, mapname) {
     let projection = getProjection(config.projection, config.mapCentre, config.mapZoomLevel);
     let zoom = d3.zoom()
         .scaleExtent([1, 4])
+        .translateExtent([[0, 0], [width * 1.25, height * 1.25]])
         .on("zoom", self.zoomed);
     let zoomLevel = 1;
     let path = d3.geoPath()
@@ -233,7 +241,7 @@ function loadBaseLayer(layer, g1, path) {
             if (error != undefined) {
                 let randomColour = d3.scaleLinear().domain([1, length])
                     .interpolate(d3.interpolateHcl)
-                    .range([d3.rgb("#a8baad"), d3.rgb('#f0ad70')]);
+                    .range([d3.rgb("#a6a6a6"), d3.rgb('#f2f2f2')]);
                 c.attr('fill', function (d) {
                     return randomColour(Math.random());
                 });
@@ -390,7 +398,7 @@ function cluster(points, searchDistance) {
 
         let pointsMinusCluster = _.difference(remainingPoints, nearby);
         diagnosticCount++;
-        if (diagnosticCount > 1000) {
+        if (diagnosticCount > 10000) {
             console.log(clusters);
             console.log(pointsMinusCluster);
             return clusters;

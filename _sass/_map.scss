@@ -1,0 +1,69 @@
+// Map Styling
+
+.map-container {
+    position: relative;
+
+    .button {
+        background-color: rgba(0,0,0,0.05);
+    }
+
+    .fullscreen-button {
+        position: absolute;
+        top: 0.25em;
+        right: 0.25em;
+    }
+
+    .buttons-left {
+        position: absolute;
+        top: 0.25em;
+        left: 0.25em;
+    }
+
+    .map-controls {
+        position: absolute;
+        top: 0.25em;
+        left: 0.25em;
+
+        .zoom-buttons {
+            width: 3em;
+
+            .button {
+                font-size: 1.2em;
+                display: block;
+                margin-bottom: 0.2em;
+                padding-left: 0.2em;
+                padding-right: 0.2em;
+            }
+        }
+    }
+
+    .map-legend {
+        position: absolute;
+        top: 0.25em;
+        left: 0.25em;
+    }
+}
+
+// Full-screen map layout changes
+body.fullscreen {
+    .map-container {
+        .map-controls {
+            bottom: 0.25em;
+            top: initial;
+        }
+    }
+}
+
+// Expand panels
+.expand-panel {
+
+    .expand-panel-title {
+        background-color: darkslateblue;
+        color: white;
+        padding: 0.1em 1em;
+    }
+
+    .expand-panel-contents {
+        display: none;
+    }
+}

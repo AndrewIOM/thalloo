@@ -76,9 +76,25 @@ function updateSliderRange(min, max) {
     });
 }
 
+ko.bindingHandlers.truncatedText = {
+    update: function (element, valueAccessor, allBindingsAccessor) {
+        var originalText = ko.utils.unwrapObservable(valueAccessor()),
+            length = ko.utils.unwrapObservable(allBindingsAccessor().maxTextLength) || 20,
+            truncatedText = originalText.length > length ? originalText.substring(0, length) : originalText;
+        ko.bindingHandlers.text.update(element, function () {
+            return truncatedText; 
+        });
+    }
+};
+
 ///////////////////////////////
 /// View Model for Map
 ///////////////////////////////
+
+let DisplayMode = {
+    STANDARD: 1,
+    FULLSCREEN: 2
+  };  
 
 function ThallooViewModel(mapname) {
 
@@ -86,12 +102,16 @@ function ThallooViewModel(mapname) {
     self.rawdata = null;
     self.config = null;
 
+    self.displayMode = ko.observable(DisplayMode.STANDARD);
+
     self.id = ko.observable();
     self.title = ko.observable();
-    self.description = ko.observable();
+    self.description = ko.observable("");
+    self.descriptionExpanded = ko.observable(false);
     self.publication = ko.observable();
     self.displayUnit = ko.observable();
     self.baselayers = ko.observableArray();
+    self.logos = ko.observableArray();
 
     self.filters = ko.observableArray();
     self.slices = ko.observableArray();
@@ -110,6 +130,15 @@ function ThallooViewModel(mapname) {
     self.palette = ko.observable();
     self.thallooMap = undefined;
 
+    self.toggleFullScreen = function() {
+        if (self.displayMode() == DisplayMode.FULLSCREEN) self.displayMode(DisplayMode.STANDARD);
+        else if (self.displayMode() == DisplayMode.STANDARD) self.displayMode(DisplayMode.FULLSCREEN);
+    };
+
+    self.toggleDescriptionLength = function() {
+        self.descriptionExpanded(!self.descriptionExpanded());
+    };
+
     self.stashFilter = function () {
         self.stashedFilters.push({
             name: self.selectedFilter().column,
@@ -123,6 +152,14 @@ function ThallooViewModel(mapname) {
             lower: lower,
             upper: upper
         });
+    };
+
+    self.zoomIn = function() {
+        self.thallooMap.zoomIn();
+    };
+
+    self.zoomOut = function() {
+        self.thallooMap.zoomOut();
     };
 
     self.redrawMap = function () {
@@ -225,6 +262,7 @@ function ThallooViewModel(mapname) {
             self.description(config.description);
             self.publication(config.publication);
             self.displayUnit(config.displayUnit);
+            self.logos(config.logos);
             $('#study-publication').val(config.publication);
             _(config.fields)
                 .map(function (field) {
@@ -298,3 +336,11 @@ function unstackLatLon(dataRow) {
             })
             .value();
 }
+
+///////////////////////////////
+/// Dropdown Panels
+///////////////////////////////
+
+$('.expand-panel-title').click(function() {
+    console.log(this);
+});

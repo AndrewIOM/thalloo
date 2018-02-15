@@ -104,6 +104,10 @@ header {
     overflow-x: hidden;
 }
 
+a.button, button {
+    border-radius: 0;
+}
+
 
 /* Layout */
 
@@ -206,4 +210,39 @@ body {
 .heading-description {
     text-align: center;
     display: block;
+
+    a {
+        cursor: pointer;
+    }
 }
+
+// Logos
+
+.logo-container {
+    margin-top:1em;
+    text-align: center;
+    img {
+        max-height: 4em;
+        display: inline-block;
+        margin-right: 1em;
+    }
+}
+
+// Detail Lists
+dl{
+    border-bottom: 0.25px solid lightgrey;
+    margin-bottom: 0.2em;
+ }
+ 
+ dt {
+   display:table-cell;
+   vertical-align:top;
+   width: 30%;
+   padding-right:5px;
+ }
+ dd {
+   display:table-cell;
+   vertical-align:top;
+   width: 70%;
+   margin: 0;
+ }
