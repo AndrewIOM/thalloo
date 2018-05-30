@@ -7,8 +7,8 @@
 title: Thalloo Maps
 description: > # this means to ignore newlines until "baseurl:"
   A range of environmental datasets that can be visualised across space and through time.
-baseurl: "/thalloo" # the subpath of your site, e.g. /blog
-url: "http://acm.im" # the base hostname & protocol for your site
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://some.url" # the base hostname & protocol for your site
 
 # Internal configuration
 markdown: kramdown

@@ -17,8 +17,14 @@
                 <br/>
                 <small id="study-publication"></small>
             </h1>
-            <span data-bind="ifnot:descriptionExpanded" class="heading-description" ><span data-bind="truncatedText: description, maxTextLength: 250"></span><a data-bind="click: toggleDescriptionLength"> more...</a></span>
-            <span data-bind="if:descriptionExpanded" class="heading-description" ><span data-bind="text: description"></span><a data-bind="click: toggleDescriptionLength"> [Less].</a></span>
+            <span data-bind="ifnot:descriptionExpanded" class="heading-description">
+                <span data-bind="truncatedText: description, maxTextLength: 250"></span>
+                <a data-bind="click: toggleDescriptionLength"> more...</a>
+            </span>
+            <span data-bind="if:descriptionExpanded" class="heading-description">
+                <span data-bind="text: description"></span>
+                <a data-bind="click: toggleDescriptionLength"> [Less].</a>
+            </span>
             <!-- Logos -->
             <div class="logo-container" data-bind="foreach: logos">
                 <img data-bind="attr: { src: '{{ site.baseurl }}/images/logos/' + $data + '.png' }" />
@@ -26,183 +32,170 @@
             <hr/>
         </div>
 
-        <!-- Full-screen header -->
-        <div class="fullscreen-header" data-bind="visible: displayMode() == 2">
-            <div class="left">
-                <h3 data-bind="text: title"></h3>
-            </div>
-            <div class="right">
-                <!-- Logos -->
-                <div class="logo-container" data-bind="foreach: logos">
-                    <img data-bind="attr: { src: '{{ site.baseurl }}/images/logos/' + $data + '.png' }" />
+        <div data-bind="css: { 'fullscreen-content': displayMode() == 2 }">
+            <!-- Full-screen header -->
+            <div class="fullscreen-header" data-bind="visible: displayMode() == 2">
+                <div class="left">
+                    <h3 data-bind="text: title"></h3>
+                </div>
+                <div class="right">
+                    <!-- Logos -->
+                    <div class="logo-container" data-bind="foreach: logos">
+                        <img data-bind="attr: { src: '{{ site.baseurl }}/images/logos/' + $data + '.png' }" />
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Map Region -->
-        <div data-bind="css: { row: displayMode() == 1 }">
-            <div data-bind="css: { 'nine columns': displayMode() == 1 }">
-                <div class="map-container">
-                    <svg id="map" />
+            <!-- Map Region -->
+            <div data-bind="css: { row: displayMode() == 1 }">
 
-                    <div class="map-legend expand-panel" data-bind="visible: displayMode() == 2">
-                        <div class="expand-panel-title button">Key and options</div>
-                        <div class="expand-panel-contents">
-                            <strong data-bind="text: displayUnit"></strong>
-                            <div id="details-panel" data-bind="visible: baselayers().length > 0">
-                                <h3>Base Layers</h3>
-                                <div data-bind="foreach: baselayers">
-                                    <strong data-bind="text: $data.name"></strong>
-                                    <p data-bind="text: $data.description"></p>
+                <div data-bind="css: { 'nine columns': displayMode() == 1 }">
+                    <div class="map-container">
+                        <svg id="map" />
+
+                        <div class="map-legend expand-panel" data-bind="visible: displayMode() == 2">
+                            <div class="expand-panel-title button">Key and options</div>
+                            <div class="expand-panel-contents">
+                                <strong data-bind="text: displayUnit"></strong>
+                                <div id="details-panel" data-bind="visible: baselayers().length > 0">
+                                    <h3>Base Layers</h3>
+                                    <div data-bind="foreach: baselayers">
+                                        <strong data-bind="text: $data.name"></strong>
+                                        <p data-bind="text: $data.description"></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="map-controls">
-                        <div class="zoom-buttons">
-                            <a data-bind="click: zoomIn" class="button">
-                                <i class="fas fa-plus-square"></i>
-                            </a>
-                            <a data-bind="click: zoomOut" class="button">
-                                <i class="fas fa-minus-square"></i>
-                            </a>
+                        <div class="map-controls">
+                            <div class="zoom-buttons">
+                                <a data-bind="click: zoomIn" class="button">
+                                    <i class="fas fa-plus-square"></i>
+                                </a>
+                                <a data-bind="click: zoomOut" class="button">
+                                    <i class="fas fa-minus-square"></i>
+                                </a>
+                            </div>
                         </div>
-                        <div class="direction-buttons" data-bind="visible: displayMode() == 2">
-                            <a class="button">
-                                <i class="fas fa-arrow-up"></i>
-                            </a>
-                            <a class="button">
-                                <i class="fas fa-arrow-left"></i>
-                            </a>
-                            <a class="button">
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                            <a class="button">
-                                <i class="fas fa-arrow-down"></i>
+                        <div class="fullscreen-button">
+                            <a data-bind="click: toggleFullScreen, visible: displayMode() == 1" class="button">
+                                <i class="fas fa-desktop"></i> Full Screen</a>
+                            <a data-bind="click: toggleFullScreen, visible: displayMode() == 2" class="button">
+                                <i class="fas fa-window-close"></i>
                             </a>
                         </div>
                     </div>
-                    <!-- <div class="fullscreen-button">
-                        <a data-bind="click: toggleFullScreen" class="button">
-                            <i class="fas fa-desktop"></i> Full Screen</a>
-                    </div> -->
+
+                    <!-- Slicer -->
+                    <div data-bind="visible: displayMode() == 1">
+                        <h3>Slice</h3>
+                        <div class="slicer">
+                            <label for="slicer">By Dimension</label>
+                            <select class="u-full-width" data-bind=" options: slices, optionsCaption: 'None', optionsText: function(item) { return item.name }, value: currentSlice"></select>
+                            <div id="slicer" data-bind="slider: currentSlice, sliderOptions: {minValue: 0, max: 100, range: 'min', step: 1"></div>
+                        </div>
+                        <div data-bind="visible: currentSlice() != null">
+                            <span data-bind="text: currentSliceMin">?</span> -
+                            <span data-bind="text: currentSliceMax">?</span>
+                            <span data-bind="text: currentSlice() ? currentSlice().unit : ''">?</span>
+                            <br/>
+                            <button>Save Slice</button>
+                        </div>
+
+                        <table data-bind="visible: stashedSlices().length > 0">
+                            <thead>
+                                <tr>
+                                    <th>Slice</th>
+                                    <th>Range</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: stashedSlices">
+                                <tr>
+                                    <td data-bind="text: name"></td>
+                                    <td data-bind="text: lower + ' to ' + upper"></td>
+                                    <td>
+                                        <button data-bind="click: $parent.removeFilter:">☓</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Selected Point(s) -->
+                        <div data-bind="if: selectedPoints().length > 0">
+                            <h3 id="selected">
+                                <span data-bind="text: selectedPoints().length"></span> Selected</h3>
+                            <ul data-bind="foreach: selectedPoints" class="card-list">
+                                <li data-bind="foreach: $data">
+                                    <dl style="margin-bottom:0">
+                                        <dt style="width: 30%;display: inline-block;font-weight: bold;" data-bind="text: key"></dt>
+                                        <dd style="width: 50%;display: inline-block;" data-bind="text: value"></dd>
+                                    </dl>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+                <div class="three columns" data-bind="visible: displayMode() == 1">
+                    {{ content }}
 
-                <!-- Slicer -->
-                <h3>Slice</h3>
-                <div class="slicer">
-                    <label for="slicer">By Dimension</label>
-                    <select class="u-full-width" data-bind=" options: slices, optionsCaption: 'None', optionsText: function(item) { return item.name }, value: currentSlice"></select>
-                    <div id="slicer" data-bind="slider: currentSlice, sliderOptions: {minValue: 0, max: 100, range: 'min', step: 1"></div>
-                </div>
-                <div data-bind="visible: currentSlice() != null">
-                    <span data-bind="text: currentSliceMin">?</span> -
-                    <span data-bind="text: currentSliceMax">?</span>
-                    <span data-bind="text: currentSlice() ? currentSlice().unit : ''">?</span>
-                    <br/>
-                    <button>Save Slice</button>
-                </div>
+                    <p data-bind="text: publication"></p>
 
-                <table data-bind="visible: stashedSlices().length > 0">
-                    <thead>
-                        <tr>
-                            <th>Slice</th>
-                            <th>Range</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-bind="foreach: stashedSlices">
-                        <tr>
-                            <td data-bind="text: name"></td>
-                            <td data-bind="text: lower + ' to ' + upper"></td>
-                            <td>
-                                <button data-bind="click: $parent.removeFilter:">☓</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <form id="filter-form" data-bind="submit: stashFilter">
+                        <h3>Filter</h3>
 
-                <!-- Selected Point(s) -->
-                <div data-bind="if: selectedPoints().length > 0">
-                    <h3 id="selected">
-                        <span data-bind="text: selectedPoints().length"></span> Selected</h3>
-                    <ul data-bind="foreach: selectedPoints" class="card-list">
-                        <li data-bind="foreach: $data">
-                            <dl style="margin-bottom:0">
-                                <dt style="width: 30%;display: inline-block;font-weight: bold;" data-bind="text: key"></dt>
-                                <dd style="width: 50%;display: inline-block;" data-bind="text: value"></dd>
-                            </dl>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-            <div class="three columns">
-                {{ content }}
-
-                <p data-bind="text: publication"></p>
-
-                <form id="filter-form" data-bind="submit: stashFilter">
-                    <h3>Filter</h3>
-
-                    <label for="exampleRecipientInput">Metadata</label>
-                    <select class="u-full-width" data-bind=" options: filters,
+                        <label for="exampleRecipientInput">Metadata</label>
+                        <select class="u-full-width" data-bind=" options: filters,
                                         optionsText: function(item) { return item.name },
                                         value: selectedFilter"></select>
 
-                    <!-- List of active filters and slices -->
-                    <table data-bind="visible: stashedFilters().length > 0">
-                        <thead>
-                            <tr>
-                                <th>Filter</th>
-                                <th>Value</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody data-bind="foreach: stashedFilters">
-                            <tr>
-                                <td data-bind="text: name"></td>
-                                <td data-bind="text: value"></td>
-                                <td>
-                                    <button data-bind="click: $parent.removeFilter">☓</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <!-- List of active filters and slices -->
+                        <table data-bind="visible: stashedFilters().length > 0">
+                            <thead>
+                                <tr>
+                                    <th>Filter</th>
+                                    <th>Value</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: stashedFilters">
+                                <tr>
+                                    <td data-bind="text: name"></td>
+                                    <td data-bind="text: value"></td>
+                                    <td>
+                                        <button data-bind="click: $parent.removeFilter">☓</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <span data-bind="text: selectedFilter() ? selectedFilter().description : ''"></span>
+                        <span data-bind="text: selectedFilter() ? selectedFilter().description : ''"></span>
 
-                    <select multiple style="height:15em; width:100%;" data-bind="options: selectedFilter() ? selectedFilter().options : [],
+                        <select multiple style="height:15em; width:100%;" data-bind="options: selectedFilter() ? selectedFilter().options : [],
                                    selectedOptions: selectedFilters"></select>
-                    <button>Save Filter</button>
-                </form>
+                        <button>Save Filter</button>
+                    </form>
 
-                <div>
-                    <h3>Key</h3>
-                    <strong data-bind="text: displayUnit"></strong>
-                    <svg id="symbology"></svg>
-                </div>
-
-                <div id="details-panel" data-bind="visible: baselayers().length > 0">
-                    <h3>Base Layers</h3>
-                    <div data-bind="foreach: baselayers">
-                        <strong data-bind="text: $data.name"></strong>
-                        <p data-bind="text: $data.description"></p>
+                    <div>
+                        <h3>Key</h3>
+                        <strong data-bind="text: displayUnit"></strong>
+                        <svg id="symbology"></svg>
                     </div>
-                </div>
 
+                    <div id="details-panel" data-bind="visible: baselayers().length > 0">
+                        <h3>Base Layers</h3>
+                        <div data-bind="foreach: baselayers">
+                            <strong data-bind="text: $data.name"></strong>
+                            <p data-bind="text: $data.description"></p>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
 </body>
 
-<script src="{{ site.baseurl }}/scripts/thalloo-map.js"></script>
-<script src="{{ site.baseurl }}/scripts/app.js"></script>
-<script>
-    var vm = new ThallooViewModel('{{page.mapname}}');
-    ko.applyBindings(vm);
-    var redrawMap = vm.redrawMap;
-</script>
+<script src="{{ site.baseurl }}/scripts/main.bundle.js"></script>
+<script type="text/javascript">thallooApp('{{page.mapname}}');</script>
 {% include analytics.html %}
-
 </html>

@@ -2,23 +2,12 @@
   <meta charset="utf-8">
   <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}</title>
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
-  <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ "/dist/css/styles.css" | prepend: site.baseurl }}">
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
   <link rel="icon" type="image/png" href="/images/favicon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.0.0/nouislider.min.css" />
   <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="https://d3js.org/d3-queue.v3.min.js"></script>
-  <script src="https://d3js.org/topojson.v1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/4.3.1/turf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.0.0/nouislider.min.js"></script>
-
-  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+  <!-- <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> -->
 </head>

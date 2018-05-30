@@ -1,12 +1,62 @@
 // Full-Screen Layout
 body.fullscreen {
+    padding:0;
+    margin:0;
+    min-height:100%;
     .container {
-        width:100%;
+        width: 100%;
+        min-height: 100%;
+        padding: 0;
+        margin: 0;      
     }
-
+    .fullscreen-content {
+        min-height: 100%;
+        padding: 4em 0 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        .map-container {
+            height: 100%;
+            width: 100%;
+            #map {
+                height: initial;
+                width: initial;
+            }
+        }
+    }
     .fullscreen-header {
-        font-size: 1.2em;
-        padding: 1em;
-        background-color: darkgrey;
+        margin-top: -4em;
+        height: 4em;
+        padding: 0.4em;
+        background-size: 1000px;
+        background-repeat: no-repeat;
+        background-position: right;
+        background-color: #fff;
+        border-bottom: 1px solid lightgrey;
+        font-size: 14px; // position: fixed;
+        // width: 100%;
+        z-index: 99; // font-size: 1.2em;
+        // padding: 1em;
+        // background-color: darkgrey;
+        .left {
+            float: left;
+            margin-top: 0.5em;
+            h3 {
+                margin-bottom: 0;
+            }
+        }
+        .right {
+            float: right;
+            display: block;
+        }
+        .logo-container {
+            margin-top: 0.5em;
+            margin-right: 1em;
+            img {
+                max-height: 3em;
+            }
+        }
     }
 }

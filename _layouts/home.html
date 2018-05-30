@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+<h1>Evidence Maps</h1>
+<hr/>
+
+<div class="row">
+    {% for map in site.maps %}
+    <div class="three columns">
+            <div class="study-preview">
+                <a href="{{ site.baseurl }}{{ map.url }}">
+                    <img src="{{ site.baseurl }}/map-data/{{ map.mapname }}.thumb.jpg" style="width:100%" alt="{{ map.mapname }}"/>
+                    <p>{{ map.name }}</p>
+                </a>
+            </div>
+    </div>
+    {% endfor %}
+</div>
