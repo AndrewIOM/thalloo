@@ -15,9 +15,7 @@ const config: webpack.Configuration = {
         filename: "[name].bundle.js",
         chunkFilename: "[name].chunk.js",
         path: path.resolve(__dirname, 'assets/scripts/'),
-        publicPath: "/scripts/",
-        libraryTarget: 'var',
-        library: 'Thalloo'    
+        publicPath: "/assets/scripts/"
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],

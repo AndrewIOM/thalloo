@@ -29,6 +29,7 @@
     "jquery": "^3.3.1",
     "knockout": "^3.4.2",
     "node-sass": "^4.8.3",
+    "nouislider": "^11.1.0",
     "optimize-css-assets-webpack-plugin": "^4.0.0",
     "sass-loader": "^7.0.1",
     "skeleton-css": "^2.0.4",

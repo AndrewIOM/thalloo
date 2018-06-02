@@ -4,11 +4,13 @@
 ///////////////////////////////
 
 import * as $ from 'jquery';
+import * as ko from "knockout";
 import * as turf from 'turf';
 import * as topojson from 'topojson';
 import * as D3 from 'd3';
 import * as _ from 'underscore';
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined, isNull, isString } from 'util';
+import * as T from "./types";
 
 export enum ThallooMapEvent {
     SELECTED_POINTS = 'selectedPoints'
@@ -24,9 +26,15 @@ type RenderingLayers = {
     Data: D3.Selection<D3.BaseType, {}, HTMLElement, any>
 }
 
+type PieCategory = {
+    Category: string,
+    Radius: number,
+    Value: number
+}
+
 type PieData = {
     Centroid: GeoJSON.Feature<GeoJSON.Point, { [name: string]: any; } | null>,
-    Categories: any,
+    Categories: PieCategory[],
     Total: number,
     DataPoints: any[]
 }
@@ -43,7 +51,7 @@ type Cluster = {
 }
 
 interface RadiusArcObject extends D3.DefaultArcObject {
-    Data: { Radius: number; }
+    data: { Radius: number; }
  }
 
 ///////////////////////////////
@@ -52,24 +60,30 @@ interface RadiusArcObject extends D3.DefaultArcObject {
 
 export class ThallooMap {
 
-    _data: any;
+    _data: T.Option<DataPoint[]>;
 
     _svg: D3.Selection<D3.BaseType, {}, HTMLElement, any>;
-    _config: MapConfiguration;
-    _symbology: Symbology;
+    _legendSvg: D3.Selection<D3.BaseType, {}, HTMLElement, any>;
+    _config: T.MapConfiguration;
+    _symbology: T.Symbology;
+    _vectorLayer: D3.Selection<D3.BaseType, {}, HTMLElement, any>;
     _layers: RenderingLayers;
     _projection: D3.GeoProjection;
     _zoomLevel: number;
     _zoom: D3.ZoomBehavior<Element, {}>;
     _selectedPoints: Array<any>;
 
-    constructor(containerId: string, config: MapConfiguration) {
+    constructor(containerId: string, legendContainerId: string, config: T.MapConfiguration) {
         // Validate map config
         // Clean svg element
 
         // Activate basic map functions
         this._config = config;
         this._svg = D3.select("#" + containerId);
+        if (isNullOrUndefined(this._svg)) {
+            throw Error("The specified map container does not exist");
+        };
+        this._legendSvg = D3.select("#" + legendContainerId);
         if (isNullOrUndefined(this._svg)) {
             throw Error("The specified map container does not exist");
         };
@@ -88,14 +102,15 @@ export class ThallooMap {
         .attr("height", '100%')
         .attr('viewBox','0 0 '+Math.min(width,height)+' '+Math.min(width,height))
         .attr('preserveAspectRatio','xMinYMin')
-        .append("g")
+        
+        let g = this._svg.append("g")
         .attr("transform", "translate(" + Math.min(width,height) / 2 + "," + Math.min(width,height) / 2 + ")");
 
         // Setup data layers in SVG
-        let vector = this._svg.append("g");
+        this._vectorLayer = g.append("g");
         this._layers = {
-            BackgroundLayers: vector.append("g"),
-            Data: vector.append("g")
+            BackgroundLayers: this._vectorLayer.append("g").attr("class","background-layers"),
+            Data: this._vectorLayer.append("g").attr("class","data")
         }
 
         this._projection = Projections.create(config.Projection, config.MapCentre, config.MapZoomLevel);
@@ -126,11 +141,11 @@ export class ThallooMap {
     }
 
     /// Draws an individual base layer, as defined in json configuration
-    loadBaseLayer = (layer:BaseLayer, g1:D3.Selection<D3.BaseType, {}, HTMLElement, any>, path:D3.GeoPath<any, D3.GeoPermissibleObjects>) => {
+    loadBaseLayer = (layer:T.BaseLayer, g1:D3.Selection<D3.BaseType, {}, HTMLElement, any>, path:D3.GeoPath<any, D3.GeoPermissibleObjects>) => {
         
         // Loader types
         let loadTopojson = D3.json<TopoJSON.Topology>("../layers/" + layer.File + ".json");
-        let loadPalette = D3.json<Palette>("../layers/" + layer.File + ".palette.json");
+        let loadPalette = D3.json<T.PaletteItem[]>("../layers/" + layer.File + ".palette.json");
 
         loadTopojson.then((tj) => {
             
@@ -173,8 +188,8 @@ export class ThallooMap {
 
     zoomed = () => {
         var transform = D3.event.transform;
+        this._vectorLayer.attr("transform", D3.event.transform);
         this._layers.Data.style("stroke-width", 1.5 / D3.event.transform.k + "px");
-        this._layers.Data.attr("transform", D3.event.transform);
         if (this._zoomLevel != D3.event.transform.k) {
             this._zoomLevel = D3.event.transform.k;
             this.redraw(this._data);
@@ -182,6 +197,8 @@ export class ThallooMap {
     };
 
     redraw = (data) => {
+
+        this._data = data;
 
         // Update width and height of SVG
         let node = this._svg.node();
@@ -194,13 +211,15 @@ export class ThallooMap {
         this._layers.Data.selectAll("g").remove();
 
         // Set new dataset as current map dataset
-        this._data = data;
+        let d = _(data).chain().map(Validation.spatialPoint).value();
+        let validatedData : DataPoint[] = []; // Workaround for type inference issue with .omit in _js
+        d.forEach(dp => { if (dp != undefined) validatedData.push(dp); })
 
         // Generate new data layer contents
         switch (this._symbology) {
-            case Symbology.PointClustered: {
+            case T.Symbology.PointClustered: {
                 let pies : PieData[] = Clustering.generatePieData(
-                    this._data,
+                    validatedData,
                     this._zoomLevel,
                     1,
                     this._config.MaxPieSize,
@@ -208,24 +227,26 @@ export class ThallooMap {
                     this._config.DisplayUnit );
                 if (pies.length == 0) break;
 
-                let currentDataPalette = this._config.DataPalettes.get(this._config.DisplayUnit);
+                let currentDataPalette = this._config.DataPalettes.find(d => {
+                    return d.Column == this._config.DisplayUnit;
+                });
                 if (isNullOrUndefined(currentDataPalette)) {
                     throw "Configuration error: the data palette is not defined: " + this._config.DisplayUnit;
                 }
 
-                Legend.drawCategoricalLegend(currentDataPalette, this._svg);
+                Legend.drawCategoricalLegend(currentDataPalette, this._legendSvg);
 
                 this.displayPies(
                     pies,
                     this._layers.Data,
                     this._projection,
-                    this._config.DataPalettes["Cool Palette"],
+                    currentDataPalette,
                     this._config.DisplayUnit
                 );
                 this._svg.call(<any>this._zoom);
                 break;
             }
-            case Symbology.PointIndividual: {
+            case T.Symbology.PointIndividual: {
                 throw "Not implemented";
             }
         }
@@ -235,29 +256,29 @@ export class ThallooMap {
         return this._selectedPoints;
     }
 
-    displayPies = (clusteredDataPies:PieData[], g2:D3.Selection<D3.BaseType, {}, HTMLElement, any>, projection:D3.GeoProjection, dataPalette:Palette, pieDisplayUnit:string) => {
+    displayPies = (clusteredDataPies:PieData[], g2:D3.Selection<D3.BaseType, {}, HTMLElement, any>, projection:D3.GeoProjection, dataPalette:T.Palette, pieDisplayUnit:string) => {
 
         let self = this;
 
-        let pie = D3.pie<PieData>()
+        let pie = D3.pie<PieCategory>()
             .value((cat) => {
-                return cat.Total;
+                return cat.Value;
             })
             .sort(null);
     
         let arc = D3.arc<RadiusArcObject>()
             .outerRadius(d => {
-                return d.Data.Radius / this._zoomLevel;
+                return d.data.Radius / this._zoomLevel;
             })
             .innerRadius(0);
     
         // Pie chart outline
         let arcOuter = D3.arc<RadiusArcObject>()
             .innerRadius(function (d) {
-                return d.Data.Radius / this._zoomLevel;
+                return d.data.Radius / this._zoomLevel;
             })
             .outerRadius(function (d) {
-                return (d.Data.Radius + 1) / this._zoomLevel;
+                return (d.data.Radius + 1) / this._zoomLevel;
             });
 
         let points = g2.selectAll('g')
@@ -281,7 +302,7 @@ export class ThallooMap {
             .append('path')
             .attr('d', <any>arc)
             .attr('fill', function (d, i) {
-                if (dataPalette != undefined) { return '#' + Palette.getColour(d.data.Categories, dataPalette[pieDisplayUnit]); }
+                if (dataPalette != undefined) { return '#' + Palette.getColour(dataPalette.Palette, d.data.Category); }
                 else { return 'black'; }
             });
 
@@ -300,18 +321,18 @@ export class ThallooMap {
 
 module Projections {
 
-    export function create(projection, centre, zoomLevel:number) {
+    export function create(projection:T.Projection, centre, zoomLevel:number) {
         if (zoomLevel == undefined) zoomLevel = 1;
         if (centre == undefined) centre = [45,45];
-        switch (name) {
-            case Projection.Arctic:
+        switch (projection) {
+            case T.Projection.Arctic:
                 return D3.geoOrthographic()
                     .scale(600 * zoomLevel)
                     .translate([500, 350])
                     .clipAngle(90)
                     .rotate([0, -90])
                     .precision(0);
-            case Projection.Standard:
+            case T.Projection.Standard:
                 return D3.geoMercator()
                     .center(centre)
                     .scale(zoomLevel * 150);
@@ -326,16 +347,19 @@ module Projections {
 
 module Palette {
 
-    export function getColour (palette:Palette, name:string) {
-        let match = palette.get(name);
-        return (isNullOrUndefined(match)) ? "black" : match;
+    let blackHex = "000";
+
+    export function getColour (palette:T.PaletteItem[], name:string) {
+        if (isNullOrUndefined(palette)) return blackHex;
+        let match = palette.find(p => { return p.Name == name });
+        return (isNullOrUndefined(match)) ? blackHex : match.Hex;
     };
 
 }
 
 module Legend {
 
-    export function drawCategoricalLegend(palette:Palette, svg:D3.Selection<D3.BaseType, {}, HTMLElement, any>) {
+    export function drawCategoricalLegend(palette:T.Palette, svg:D3.Selection<D3.BaseType, {}, HTMLElement, any>) {
 
         // Clear current legend
         svg.empty();
@@ -344,7 +368,7 @@ module Legend {
         let domain : string[] = [];
         let range : string[] = [];
         let p : {Key:string,Value:string}[] = [];
-        palette.forEach((v,k) => { domain.push(v); range.push(v); p.push({Key:k,Value:v}) } );
+        palette.Palette.forEach(i => { domain.push(i.Hex); range.push(i.Hex); p.push({Key:i.Name,Value:i.Hex}) } );
 
         let height = range.length * 17.5;
         let buffer = 6;
@@ -380,6 +404,33 @@ module Legend {
 
 }
 
+module Validation {
+
+    export function spatialPoint(point:any) : DataPoint | undefined {
+        if ('LatDD' in point && 'LonDD' in point) {
+            if (isString(point.LatDD) || isString(point.LonDD)) {
+                if ((point.LatDD.length == 0) || (point.LonDD.length == 0)) {
+                    console.log("Warning: a point had empty spatial coordinates");
+                    return undefined;            
+                }
+            }
+            if (isNumber(point.LatDD) && isNumber(point.LonDD)) {
+                point.LatDD = parseFloat(point.LatDD);
+                point.LonDD = parseFloat(point.LonDD);
+                return point;
+            }
+        }
+        console.log("Warning: a point did not have valid spatial coordinates");
+        return undefined;
+    }
+
+    function isNumber(value: string | number): boolean
+    {
+        return !isNaN(Number(value.toString()));
+    }
+
+}
+
 
 module Clustering {
 
@@ -391,7 +442,7 @@ module Clustering {
         // Zoom level is between one (= 150km aggregation) and four (=1km)
         let currentAggregationDistance = maxClusterDistance - (((zoomLevel - 1) / (4 - 1)) * (maxClusterDistance - 1));
         let clusteredData = cluster(sortedData, currentAggregationDistance);
-    
+
         let pieScale =
             D3.scalePow()
             .domain([0, maxControlCount])
@@ -480,14 +531,15 @@ module Clustering {
 
             let clusterFeatures = turf.featureCollection(
                 _.map(nearby, (dataPoint => {
-                    let x : GeoJSON.Feature<GeoJSON.Point> = {
-                        "type": "Feature",
-                        "properties": dataPoint,
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [dataPoint.LonDD, dataPoint.LatDD]
-                        }
-                    }
+                    let x = turf.point([dataPoint.LonDD, dataPoint.LatDD], dataPoint);
+                    // let x : GeoJSON.Feature<GeoJSON.Point> = {
+                    //     "type": "Feature",
+                    //     "properties": dataPoint,
+                    //     "geometry": {
+                    //         "type": "Point",
+                    //         "coordinates": [dataPoint.LonDD, dataPoint.LatDD]
+                    //     }
+                    // }
                     return x;
                 })));
 

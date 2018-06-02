@@ -1,26 +1,26 @@
 
 // Mapping
 
-type Option<a> = a | undefined
+export type Option<a> = a | undefined
 
-enum Symbology {
-    PointIndividual,
-    PointClustered
+export enum Symbology {
+    PointIndividual = "individual",
+    PointClustered = "cluster"
 }
 
-enum Projection {
-    Arctic,
-    Standard
+export enum Projection {
+    Arctic = "arctic",
+    Standard = "standard"
 }
 
-type BaseLayer = {
+export type BaseLayer = {
     File: string
     Name: string
     Description: string
 }
 
-enum DataType { Continuous, Categorical }
-type DataField = {
+export enum DataType { Continuous = "float", Categorical = "string" }
+export type DataField = {
     Column: string
     Name: string
     Unit: string
@@ -28,7 +28,7 @@ type DataField = {
     DataType: DataType
 }
 
-type MapConfiguration = {
+export type MapConfiguration = {
     Name:               string
     Description:        string
     Logos:              string[]
@@ -45,6 +45,7 @@ type MapConfiguration = {
     DataPalettes:       Palettes
 }
 
-type HexCode = string
-type Palette = Map<string,HexCode>
-type Palettes = Map<string,Palette>
+export type HexCode = string
+export type PaletteItem = { Name: string, Hex: string }
+export type Palette = { Column: string, Palette: PaletteItem[] }
+export type Palettes = Palette[]

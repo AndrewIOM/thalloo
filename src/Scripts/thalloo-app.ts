@@ -1,10 +1,13 @@
 /*jshint esversion: 6 */
 
 import './Components/_koBindings';
+import * as $ from 'jquery';
 import * as d3 from 'd3';
 import * as _ from 'underscore';
 import { isString } from 'util';
 import * as ThallooMap from './thalloo-mapping';
+import * as ko from "knockout";
+import * as T from "./types";
 
 enum DisplayMode {
     STANDARD = 1,
@@ -18,7 +21,7 @@ type Slicer = {
     Max: number
 }
 
-interface Filter extends DataField {
+interface Filter extends T.DataField {
     Options: string[]
     SelectedOptions: string[]
 }
@@ -38,9 +41,9 @@ type ThallooData = Map<string,MetaData>[]
 
 export class ThallooViewModel {
 
-    config : Option<MapConfiguration> = undefined;
+    config : T.Option<T.MapConfiguration> = undefined;
     rawData: any[] = [];
-    thallooMap : Option<ThallooMap.ThallooMap> = undefined;
+    thallooMap : T.Option<ThallooMap.ThallooMap> = undefined;
 
     filters = ko.observableArray<Filter>();
     slices = ko.observableArray<Slicer>();
@@ -53,7 +56,7 @@ export class ThallooViewModel {
     descriptionExpanded = ko.observable(false);
     publication = ko.observable<string>();
     displayUnit = ko.observable();
-    baselayers = ko.observableArray();
+    baselayers = ko.observableArray<T.BaseLayer>([]);
     logos = ko.observableArray();
 
     selectedFilter = ko.observable<Filter>();
@@ -103,12 +106,12 @@ export class ThallooViewModel {
         });
 
         // Loader types
-        let loadConfig = d3.json<MapConfiguration>("../map-data/" + mapName + ".json");
+        let loadConfig = d3.json<T.MapConfiguration>("../map-data/" + mapName + ".json");
         let loadData = d3.tsv("../map-data/" + mapName + ".txt");
 
         loadConfig.then(config => {
             self.config = config;
-            self.thallooMap = new ThallooMap.ThallooMap("map", config);
+            self.thallooMap = new ThallooMap.ThallooMap("map", "symbology", config);
 
             // Cache in observables (is this needed?)
             self.baselayers(config.BaseLayers);
@@ -133,54 +136,53 @@ export class ThallooViewModel {
                 }
             });
 
-            // Setup slicers and filters
-            _(config.Fields)
-            .map(function (field) {
-                // Split into slices and filters
-                if (field.DataType == DataType.Continuous) {
-                    let slicer : Slicer = 
-                        { Min: _.chain(self.rawData)
-                                    .pluck(field.Column).filter(n => { return !isNaN(parseFloat(n)) && isFinite(n); })
-                                    .min()
-                                    .value(),
-                            Max: _.chain(self.rawData)
-                                    .pluck(field.Column).filter(n => { return !isNaN(parseFloat(n)) && isFinite(n); })
-                                    .max()
-                                    .value(),
-                            Unit: field.Unit,
-                            Name: field.Name }
-                    self.slices.push(slicer);
-                } else if (field.DataType == DataType.Categorical) {
-                    let filter : Filter =
-                        { Options: _.chain(self.rawData)
-                                    .pluck(field.Column)
-                                    .map((s:Option<string>) => {
-                                        if (s != undefined) {
-                                            return _.map(s.split(';'), st => {
-                                                return st.trim();
-                                            })    
-                                        }
-                                    })
-                                    .flatten()
-                                    .filter(d => { return d != ''; })
-                                    .uniq()
-                                    .sortBy(i => {
-                                        return i.toLowerCase();
-                                    })
-                                    .value(),
-                            Name: field.Name,
-                            Unit: field.Unit,
-                            Description: field.Description,
-                            DataType: field.DataType,
-                            Column: field.Column,
-                            SelectedOptions: [] }
-                    self.filters.push(filter);
-                }
-            });
-
             // Load data
             loadData.then(data => {
                 self.rawData = _.map(data, Helper.tryParseDataPoint);
+                // Setup slicers and filters
+                _(config.Fields)
+                .map(function (field) {
+                    // Split into slices and filters
+                    if (field.DataType == T.DataType.Continuous) {
+                        let slicer : Slicer = 
+                            { Min: _.chain(self.rawData)
+                                        .pluck(field.Column).filter(n => { return !isNaN(parseFloat(n)) && isFinite(n); })
+                                        .min()
+                                        .value(),
+                                Max: _.chain(self.rawData)
+                                        .pluck(field.Column).filter(n => { return !isNaN(parseFloat(n)) && isFinite(n); })
+                                        .max()
+                                        .value(),
+                                Unit: field.Unit,
+                                Name: field.Name }
+                        self.slices.push(slicer);
+                    } else if (field.DataType == T.DataType.Categorical) {
+                        let filter : Filter =
+                            { Options: _.chain(self.rawData)
+                                        .pluck(field.Column)
+                                        .map((s:T.Option<string>) => {
+                                            if (s != undefined) {
+                                                return _.map(s.split(';'), st => {
+                                                    return st.trim();
+                                                })    
+                                            }
+                                        })
+                                        .flatten()
+                                        .filter(d => { return d != ''; })
+                                        .uniq()
+                                        .sortBy(i => {
+                                            return i.toLowerCase();
+                                        })
+                                        .value(),
+                                Name: field.Name,
+                                Unit: field.Unit,
+                                Description: field.Description,
+                                DataType: field.DataType,
+                                Column: field.Column,
+                                SelectedOptions: [] }
+                        self.filters.push(filter);
+                    }
+                });
                 self.redrawMap();
             })
         });
@@ -263,6 +265,7 @@ export class ThallooViewModel {
         });
         
         if (this.thallooMap != null) {
+            console.log(filteredAndSlicedData);
             this.thallooMap.redraw(filteredAndSlicedData);
         }
     };
@@ -304,7 +307,7 @@ module Helper {
         });
     }
 
-    export function tryParseDataPoint(d:any) : Option<ThallooMap.DataPoint> {
+    export function tryParseDataPoint(d:any) : T.Option<ThallooMap.DataPoint> {
         return d;
         //         // Load App State
 //         let loadData = d3.tsv("../map-data/" + mapName + ".txt");

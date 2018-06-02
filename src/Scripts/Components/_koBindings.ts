@@ -2,6 +2,9 @@
 /// KnockoutJS Custom Bindings
 ///////////////////////////////
 
+import * as ko from "knockout";
+import * as noUiSlider from 'nouislider';
+
 ko.bindingHandlers.slider = {
     init: function (element, valueAccessor, allBindingsAccesor, viewModel, bindingContext) {
         var model = viewModel;
