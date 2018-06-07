@@ -28,10 +28,16 @@ export type DataField = {
     DataType: DataType
 }
 
+export type Logo = {
+    File: string
+    Name: string
+    ExternalUrl: string
+}
+
 export type MapConfiguration = {
     Name:               string
     Description:        string
-    Logos:              string[]
+    Logos:              Logo[]
     Publication:        string
     Projection:         Projection
     DisplayMode:        Symbology

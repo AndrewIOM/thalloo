@@ -104,8 +104,8 @@ header {
     overflow-x: hidden;
 }
 
-a.button, button {
-    border-radius: 0;
+a.button, button, .button {
+    border-radius: 0 !important;
 }
 
 

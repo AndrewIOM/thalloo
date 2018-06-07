@@ -7,13 +7,12 @@ import * as noUiSlider from 'nouislider';
 
 ko.bindingHandlers.slider = {
     init: function (element, valueAccessor, allBindingsAccesor, viewModel, bindingContext) {
-        var model = viewModel;
-        if (model.currentSlice() == null) return;
+        if (viewModel.currentSlice() == null) return;
         noUiSlider.create(element, {
             start: [-9999, 9999],
             range: {
-                'min': model.currentSlice().min,
-                'max': model.currentSlice().max
+                'min': viewModel.currentSlice().Min,
+                'max': viewModel.currentSlice().Max
             },
             connect: true,
             behaviour: 'tap-drag',
@@ -21,11 +20,12 @@ ko.bindingHandlers.slider = {
         });
         ( < noUiSlider.Instance > element).noUiSlider.on('slide', function (values, handle) {
             var value = values[handle];
+            console.log(value);
+            console.log(handle);
             if (handle) {
-                model.currentSliceMax(value);
-
+                viewModel.currentSliceMax(value);
             } else {
-                model.currentSliceMin(value);
+                viewModel.currentSliceMin(value);
             }
         });
     },
@@ -34,8 +34,9 @@ ko.bindingHandlers.slider = {
             let e = document.getElementById('slicer');
             if (e != null) e.setAttribute('disabled', "true");
         } else {
+            console.log(viewModel.currentSlice().Min + " - " + viewModel.currentSlice().Max);
             if (element.innerHTML.length > 0) {
-                updateSliderRange(Number(viewModel.currentSlice().min), Number(viewModel.currentSlice().max));
+                updateSliderRange(viewModel.currentSlice().Min, viewModel.currentSlice().Max);
                 let e = document.getElementById('slicer');
                 if (e != null) e.removeAttribute('disabled');
             } else {
@@ -48,13 +49,12 @@ ko.bindingHandlers.slider = {
 };
 
 function createSlider(element, viewModel) {
-    var model = viewModel;
-    if (model.currentSlice() == null) return;
+    if (viewModel.currentSlice() == null) return;
     noUiSlider.create(element, {
         start: [-9999, 9999],
         range: {
-            'min': Number(model.currentSlice().min),
-            'max': Number(model.currentSlice().max)
+            'min': Number(viewModel.currentSlice().Min),
+            'max': Number(viewModel.currentSlice().Max)
         },
         connect: true,
         behaviour: 'tap-drag',
@@ -63,10 +63,10 @@ function createSlider(element, viewModel) {
     element.noUiSlider.on('slide', function (values, handle) {
         var value = values[handle];
         if (handle) {
-            model.currentSliceMax(value);
+            viewModel.currentSliceMax(value);
 
         } else {
-            model.currentSliceMin(value);
+            viewModel.currentSliceMin(value);
         }
     });
 }

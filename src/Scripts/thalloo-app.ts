@@ -10,6 +10,7 @@ import * as ko from "knockout";
 import * as T from "./types";
 
 enum DisplayMode {
+    LOADING = 0,
     STANDARD = 1,
     FULLSCREEN = 2
   };
@@ -48,16 +49,16 @@ export class ThallooViewModel {
     filters = ko.observableArray<Filter>();
     slices = ko.observableArray<Slicer>();
 
-    displayMode = ko.observable(DisplayMode.STANDARD);
+    displayMode = ko.observable(DisplayMode.LOADING);
 
     id = ko.observable<string>();
     title = ko.observable<string>();
-    description = ko.observable("");
+    description = ko.observable<string>("");
     descriptionExpanded = ko.observable(false);
     publication = ko.observable<string>();
     displayUnit = ko.observable();
     baselayers = ko.observableArray<T.BaseLayer>([]);
-    logos = ko.observableArray();
+    logos = ko.observableArray<T.Logo>();
 
     selectedFilter = ko.observable<Filter>();
     selectedFilterValues = ko.observableArray<string>();
@@ -99,6 +100,7 @@ export class ThallooViewModel {
             if (slice != null) {
                 self.currentSliceMin(slice.Min);
                 self.currentSliceMax(slice.Max);
+                console.log(slice);
                 self.redrawMap();
             } else {
                 self.redrawMap();
@@ -110,8 +112,9 @@ export class ThallooViewModel {
         let loadData = d3.tsv("../map-data/" + mapName + ".txt");
 
         loadConfig.then(config => {
+            this.displayMode(DisplayMode.STANDARD);
             self.config = config;
-            self.thallooMap = new ThallooMap.ThallooMap("map", "symbology", config);
+            self.thallooMap = new ThallooMap.ThallooMap("map", ".symbology-container", config);
 
             // Cache in observables (is this needed?)
             self.baselayers(config.BaseLayers);
@@ -145,14 +148,15 @@ export class ThallooViewModel {
                     // Split into slices and filters
                     if (field.DataType == T.DataType.Continuous) {
                         let slicer : Slicer = 
-                            { Min: _.chain(self.rawData)
+                            {   Min: Number(
+                                        _.chain(self.rawData)
                                         .pluck(field.Column).filter(n => { return !isNaN(parseFloat(n)) && isFinite(n); })
                                         .min()
-                                        .value(),
-                                Max: _.chain(self.rawData)
+                                        .value()),
+                                Max: Number(_.chain(self.rawData)
                                         .pluck(field.Column).filter(n => { return !isNaN(parseFloat(n)) && isFinite(n); })
                                         .max()
-                                        .value(),
+                                        .value()),
                                 Unit: field.Unit,
                                 Name: field.Name }
                         self.slices.push(slicer);
@@ -243,10 +247,12 @@ export class ThallooViewModel {
                         return Helper.stringPresentInSemicolonList(d[self.selectedFilter().Column], b);
                     }) != undefined;
                 })
-            filteredAndSlicedData = this.rawData;
         }
 
         if (this.currentSlice() != null) {
+            console.log(self.currentSliceMax());
+            console.log(self.currentSliceMin());
+
             filteredAndSlicedData =
                 _(filteredAndSlicedData)
                 .chain()
@@ -265,7 +271,6 @@ export class ThallooViewModel {
         });
         
         if (this.thallooMap != null) {
-            console.log(filteredAndSlicedData);
             this.thallooMap.redraw(filteredAndSlicedData);
         }
     };

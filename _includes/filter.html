@@ -1,0 +1,14 @@
+<form id="filter-form" data-bind="submit: stashFilter">
+    <h3>Filter</h3>
+
+    <label for="exampleRecipientInput">Metadata</label>
+    <select class="u-full-width" data-bind=" options: filters,
+                    optionsText: function(item) { return item.Name },
+                    value: selectedFilter"></select>
+
+    <span data-bind="text: selectedFilter() ? selectedFilter().description : ''"></span>
+
+    <select multiple style="height:15em; width:100%;" data-bind="options: selectedFilter() ? selectedFilter().Options : [],
+               selectedOptions: selectedFilterValues"></select>
+    <button>Save Filter</button>
+</form>

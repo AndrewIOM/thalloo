@@ -1,0 +1,13 @@
+<div class="legend-container">
+    <h3>Legend</h3>
+    <strong data-bind="text: displayUnit"></strong>
+    <svg class="symbology-container"></svg>
+
+    <div id="details-panel" data-bind="visible: baselayers().length > 0">
+        <h4>Base Layers</h4>
+        <div data-bind="foreach: baselayers">
+            <strong data-bind="text: Name"></strong>
+            <p data-bind="text: Description"></p>
+        </div>
+    </div>
+</div>

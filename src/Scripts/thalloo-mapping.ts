@@ -61,6 +61,7 @@ interface RadiusArcObject extends D3.DefaultArcObject {
 export class ThallooMap {
 
     _data: T.Option<DataPoint[]>;
+    _currentPalette: T.Option<T.Palette>;
 
     _svg: D3.Selection<D3.BaseType, {}, HTMLElement, any>;
     _legendSvg: D3.Selection<D3.BaseType, {}, HTMLElement, any>;
@@ -73,7 +74,7 @@ export class ThallooMap {
     _zoom: D3.ZoomBehavior<Element, {}>;
     _selectedPoints: Array<any>;
 
-    constructor(containerId: string, legendContainerId: string, config: T.MapConfiguration) {
+    constructor(containerId: string, legendContainerSelector: string, config: T.MapConfiguration) {
         // Validate map config
         // Clean svg element
 
@@ -83,9 +84,9 @@ export class ThallooMap {
         if (isNullOrUndefined(this._svg)) {
             throw Error("The specified map container does not exist");
         };
-        this._legendSvg = D3.select("#" + legendContainerId);
-        if (isNullOrUndefined(this._svg)) {
-            throw Error("The specified map container does not exist");
+        this._legendSvg = D3.selectAll(legendContainerSelector);
+        if (isNullOrUndefined(this._legendSvg)) {
+            throw Error("There are no legend elements available with the class name " + legendContainerSelector);
         };
 
         // Set default symbology
@@ -104,7 +105,7 @@ export class ThallooMap {
         .attr('preserveAspectRatio','xMinYMin')
         
         let g = this._svg.append("g")
-        .attr("transform", "translate(" + Math.min(width,height) / 2 + "," + Math.min(width,height) / 2 + ")");
+        // .attr("transform", "translate(" + Math.min(width,height) / 2 + "," + Math.min(width,height) / 2 + ")");
 
         // Setup data layers in SVG
         this._vectorLayer = g.append("g");
@@ -121,6 +122,15 @@ export class ThallooMap {
         this._selectedPoints = [];
         let path = D3.geoPath()
             .projection(this._projection);
+
+        // Palette
+        this._currentPalette = this._config.DataPalettes.find(d => {
+            return d.Column == this._config.DisplayUnit;
+        });
+        if (isNullOrUndefined(this._currentPalette)) {
+            throw "Configuration error: the data palette is not defined: " + this._config.DisplayUnit;
+        }
+        Legend.drawCategoricalLegend(this._currentPalette, this._legendSvg);
 
         this.loadBaseLayers(path);
     }
@@ -227,20 +237,11 @@ export class ThallooMap {
                     this._config.DisplayUnit );
                 if (pies.length == 0) break;
 
-                let currentDataPalette = this._config.DataPalettes.find(d => {
-                    return d.Column == this._config.DisplayUnit;
-                });
-                if (isNullOrUndefined(currentDataPalette)) {
-                    throw "Configuration error: the data palette is not defined: " + this._config.DisplayUnit;
-                }
-
-                Legend.drawCategoricalLegend(currentDataPalette, this._legendSvg);
-
                 this.displayPies(
                     pies,
                     this._layers.Data,
                     this._projection,
-                    currentDataPalette,
+                    this._currentPalette,
                     this._config.DisplayUnit
                 );
                 this._svg.call(<any>this._zoom);
@@ -256,7 +257,7 @@ export class ThallooMap {
         return this._selectedPoints;
     }
 
-    displayPies = (clusteredDataPies:PieData[], g2:D3.Selection<D3.BaseType, {}, HTMLElement, any>, projection:D3.GeoProjection, dataPalette:T.Palette, pieDisplayUnit:string) => {
+    displayPies = (clusteredDataPies:PieData[], g2:D3.Selection<D3.BaseType, {}, HTMLElement, any>, projection:D3.GeoProjection, dataPalette:T.Option<T.Palette>, pieDisplayUnit:string) => {
 
         let self = this;
 
@@ -368,7 +369,7 @@ module Legend {
         let domain : string[] = [];
         let range : string[] = [];
         let p : {Key:string,Value:string}[] = [];
-        palette.Palette.forEach(i => { domain.push(i.Hex); range.push(i.Hex); p.push({Key:i.Name,Value:i.Hex}) } );
+        palette.Palette.forEach(i => { domain.push(i.Name); range.push(i.Name); p.push({Key:i.Name,Value:i.Hex}) } );
 
         let height = range.length * 17.5;
         let buffer = 6;

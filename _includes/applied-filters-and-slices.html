@@ -1,0 +1,38 @@
+<table data-bind="visible: stashedSlices().length > 0">
+    <thead>
+        <tr>
+            <th>Slice</th>
+            <th>Range</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: stashedSlices">
+        <tr>
+            <td data-bind="text: name"></td>
+            <td data-bind="text: lower + ' to ' + upper"></td>
+            <td>
+                <button data-bind="click: $parent.removeFilter:">☓</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- List of active filters and slices -->
+<table data-bind="visible: stashedFilters().length > 0">
+    <thead>
+        <tr>
+            <th>Filter</th>
+            <th>Value</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: stashedFilters">
+        <tr>
+            <td data-bind="text: name"></td>
+            <td data-bind="text: value"></td>
+            <td>
+                <button data-bind="click: $parent.removeFilter">☓</button>
+            </td>
+        </tr>
+    </tbody>
+</table>

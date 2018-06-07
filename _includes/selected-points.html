@@ -1,0 +1,13 @@
+<!-- Selected Point(s) -->
+<div data-bind="if: selectedPoints().length > 0">
+    <h3 id="selected">
+        <span data-bind="text: selectedPoints().length"></span> Selected</h3>
+    <ul data-bind="foreach: selectedPoints" class="card-list">
+        <li data-bind="foreach: $data">
+            <dl style="margin-bottom:0">
+                <dt style="width: 30%;display: inline-block;font-weight: bold;" data-bind="text: $data.key"></dt>
+                <dd style="width: 50%;display: inline-block;" data-bind="text: $data.value"></dd>
+            </dl>
+        </li>
+    </ul>
+</div>
