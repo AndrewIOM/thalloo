@@ -88,15 +88,13 @@
                     </div>
                     <div data-bind="visible: displayMode() == 1">
                         {% include slicer.html %} 
-                        {% include applied-filters-and-slices.html %} 
                         {% include selected-points.html %}
                     </div>
                 </div>
                 <div class="three columns" data-bind="visible: displayMode() == 1">
                     {{ content }}
-                    Current Points: <span data-bind="text: displayedPointsCount"></span>
                     <p data-bind="text: publication"></p>
-                    <span data-bind="text: displayedPointsCount"></span>
+                    {% include applied-filters-and-slices.html %} 
                     {% include filter.html %} 
                     {% include legend.html %}
                 </div>

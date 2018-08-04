@@ -229,6 +229,10 @@ export class ThallooViewModel {
         });
     };
 
+    removeSlice = (slice:Slicer) => {
+        this.stashedSlices.remove(slice);
+    }
+
     zoomIn = () => {
         if (this.thallooMap != null) this.thallooMap.zoomIn();
     };

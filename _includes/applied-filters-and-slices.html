@@ -1,38 +1,29 @@
-<table data-bind="visible: stashedSlices().length > 0">
-    <thead>
-        <tr>
-            <th>Slice</th>
-            <th>Range</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody data-bind="foreach: stashedSlices">
-        <tr>
-            <td data-bind="text: name"></td>
-            <td data-bind="text: lower + ' to ' + upper"></td>
-            <td>
-                <button data-bind="click: $parent.removeFilter:">☓</button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="results-card">
+    <div class="current-count">
+        <span data-bind="text: displayedPointsCount"></span>
+        data points
+    </div>
 
-<!-- List of active filters and slices -->
-<table data-bind="visible: stashedFilters().length > 0">
-    <thead>
-        <tr>
-            <th>Filter</th>
-            <th>Value</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody data-bind="foreach: stashedFilters">
-        <tr>
-            <td data-bind="text: name"></td>
-            <td data-bind="text: value"></td>
-            <td>
-                <button data-bind="click: $parent.removeFilter">☓</button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <ul class="filter-list" data-bind="visible: stashedSlices().length > 0, foreach: stashedSlices">
+        <li>
+            <span class="remove-button">
+                <a href="#" data-bind="click: $parent.removeSlice">☓</button>
+            </span>
+            <span class="name" data-bind="text: Name"></span>
+            <span class="token token-range" data-bind="text: Min + ' - ' + Max"></span>
+        </li>
+    </ul>
+
+    <ul class="filter-list" data-bind="visible: stashedFilters().length > 0, foreach: stashedFilters">
+        <li>
+            <span class="remove-button">
+                <a href="#" data-bind="click: $parent.removeFilter">☓</button>
+            </span>
+            <span class="name" data-bind="text: Name"></span>
+            <span data-bind="foreach: SelectedOptions">
+                <span class="token" data-bind="text: $data"></span>
+            </span>
+        </li>
+    </ul>
+
+</div>

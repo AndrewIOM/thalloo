@@ -246,3 +246,44 @@ dl{
    width: 70%;
    margin: 0;
  }
+
+ /* Filtering and Tags */
+
+.results-card {
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+
+    .filter-list {
+        list-style: none;
+
+        li {
+            border-top: 0.5px solid lightgrey;
+            padding: 0.5em 0;
+            border-bottom: 0.5px solid lightgrey;
+
+            .remove-button {
+                float: right;
+            }
+
+            .name {
+                font-variant: small-caps;
+                display: block;
+                width: 80%;
+            }
+        }
+    }
+}
+
+.token {
+    background-color: black;
+    padding: 0.4em;
+    color: white;
+    border-radius: 0.3em;
+    font-size: 0.80em;
+    font-family: Arial;
+ }
+
+ .token-range {
+     background-color: rgb(214, 140, 2);
+     color: black;
+ }
