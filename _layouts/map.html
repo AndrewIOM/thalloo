@@ -23,7 +23,8 @@
                 <small id="study-publication"></small>
             </h1>
             <span data-bind="ifnot:descriptionExpanded" class="heading-description">
-                <span data-bind="truncatedText: description, maxTextLength: 250"></span>
+                <!-- <span data-bind="truncatedText: description, maxTextLength: 250"></span> -->
+                <span data-bind="text: description"></span>
                 <a data-bind="click: toggleDescriptionLength"> more...</a>
             </span>
             <span data-bind="if:descriptionExpanded" class="heading-description">
@@ -93,7 +94,9 @@
                 </div>
                 <div class="three columns" data-bind="visible: displayMode() == 1">
                     {{ content }}
+                    Current Points: <span data-bind="text: displayedPointsCount"></span>
                     <p data-bind="text: publication"></p>
+                    <span data-bind="text: displayedPointsCount"></span>
                     {% include filter.html %} 
                     {% include legend.html %}
                 </div>

@@ -61,7 +61,8 @@ function createSlider(element, viewModel) {
         step: 1,
     });
     element.noUiSlider.on('slide', function (values, handle) {
-        var value = values[handle];
+        var value = Number(values[Number(handle)]);
+        console.log(value);
         if (handle) {
             viewModel.currentSliceMax(value);
 
@@ -85,9 +86,9 @@ function updateSliderRange(min:number, max:number) {
 
 ko.bindingHandlers.truncatedText = {
     update: function (element, valueAccessor, allBindingsAccessor) {
-        var originalText = ko.utils.unwrapObservable(valueAccessor()),
-            length = ko.utils.unwrapObservable<string>(allBindingsAccessor().maxTextLength) || 20,
-            truncatedText = originalText.length > length ? originalText.substring(0, length) : originalText;
-            ko.bindingHandlers.text.update = element, () => { return truncatedText; }, <any>null, null, <any>null;
+        let originalText = ko.utils.unwrapObservable(valueAccessor());
+        let length = ko.utils.unwrapObservable<string>(allBindingsAccessor().maxTextLength) || 20
+        let truncatedText = originalText.length > length ? originalText.substring(0, length) : originalText;
+        ko.bindingHandlers.text.update = element, () => { return truncatedText; }, <any>null, null, <any>null;
     }
 };

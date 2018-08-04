@@ -17,6 +17,7 @@ enum DisplayMode {
 
 type Slicer = {
     Name: string
+    Column: string
     Unit: string
     Min: number
     Max: number
@@ -58,7 +59,7 @@ export class ThallooViewModel {
     publication = ko.observable<string>();
     displayUnit = ko.observable();
     baselayers = ko.observableArray<T.BaseLayer>([]);
-    logos = ko.observableArray<T.Logo>();
+    logos = ko.observableArray<T.Logo>([]);
 
     selectedFilter = ko.observable<Filter>();
     selectedFilterValues = ko.observableArray<string>();
@@ -69,6 +70,7 @@ export class ThallooViewModel {
 
     stashedFilters = ko.observableArray<Filter>();
     stashedSlices = ko.observableArray<ActiveSlicer>();
+    displayedPointsCount = ko.observable(0);
     selectedPoints = ko.observableArray();
 
     constructor(mapName:string) {
@@ -158,7 +160,8 @@ export class ThallooViewModel {
                                         .max()
                                         .value()),
                                 Unit: field.Unit,
-                                Name: field.Name }
+                                Name: field.Name,
+                                Column: field.Column }
                         self.slices.push(slicer);
                     } else if (field.DataType == T.DataType.Categorical) {
                         let filter : Filter =
@@ -257,7 +260,9 @@ export class ThallooViewModel {
                 _(filteredAndSlicedData)
                 .chain()
                 .filter(function (dp) {
-                    let match = Number(dp[self.currentSlice().Name]) < Number(self.currentSliceMax()) && Number(dp[self.currentSlice().Name]) > Number(self.currentSliceMin());
+                    let match = 
+                        Number(dp[self.currentSlice().Column]) <= Number(self.currentSliceMax()) 
+                        && Number(dp[self.currentSlice().Column]) >= Number(self.currentSliceMin());
                     return match;
                 })
                 .value();
@@ -266,11 +271,12 @@ export class ThallooViewModel {
         this.stashedFilters().forEach( f => {
             filteredAndSlicedData =
                 _.filter(filteredAndSlicedData, dp => {
-                    return _.contains(f.SelectedOptions, dp[f.Name]);
+                    return _.contains(f.SelectedOptions, dp[f.Column]);
                 });
         });
         
         if (this.thallooMap != null) {
+            this.displayedPointsCount(filteredAndSlicedData.length);
             this.thallooMap.redraw(filteredAndSlicedData);
         }
     };

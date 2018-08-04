@@ -275,10 +275,10 @@ export class ThallooMap {
     
         // Pie chart outline
         let arcOuter = D3.arc<RadiusArcObject>()
-            .innerRadius(function (d) {
+            .innerRadius(d => {
                 return d.data.Radius / this._zoomLevel;
             })
-            .outerRadius(function (d) {
+            .outerRadius(d => {
                 return (d.data.Radius + 1) / this._zoomLevel;
             });
 
@@ -313,6 +313,7 @@ export class ThallooMap {
             })
             .enter()
             .append('path')
+            .attr("class", "outline")
             .attr('d', <any>arcOuter)
             .attr('fill', 'black');
     };

@@ -33,3 +33,9 @@ A simple JSON configuration file is required, alongside a UTF8 tab delimited she
 [Code being developed under MIT license here](https://github.com/AndrewIOM/thalloo)
 
 [An example instance is available to view here](https://oxlel.github.io/evidencemaps)
+
+---
+
+## Developer Instructions
+
+Use ``yarn`` to setup the development environment. A simple ``yarn install`` followed by ``yarn run build:dev`` will watch the files for any changes.
