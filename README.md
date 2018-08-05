@@ -26,7 +26,10 @@ The mapping components are written using D3.js. The website is static, and can b
 
 You can host one or many evidence maps using GitHub Pages' free hosting.
 
-Thalloo is provided as a Jekyll gem theme. A starter template will be provided, which can be forked (coming soon), or the gem can be installed directly as a Jekyll template when setting up your site. 
+Thalloo is provided as a Jekyll theme. The easiest way to get started is to fork the starter template:
+1. Fork [the starter template](https://github.com/AndrewIOM/thalloo-starter).
+2. Activate GitHub pages on your fork.
+3. Remove the example data and add your own.
 
 A simple JSON configuration file is required, alongside a UTF8 tab delimited sheet of your coded data. Note that Thalloo currently only support geographical data, so each data row must have a latitude and longitude in decimal degrees.
 
