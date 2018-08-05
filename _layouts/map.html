@@ -48,7 +48,7 @@
                 <div class="right">
                     <!-- Logos -->
                     <div class="logo-container" data-bind="foreach: logos">
-                        <img data-bind="attr: { src: '{{ site.baseurl }}/images/logos/' + $data + '.png' }" />
+                        <img data-bind="attr: { src: '{{ site.baseurl }}/images/logos/' + $data.File + '.png' }" />
                     </div>
                 </div>
             </div>
@@ -60,13 +60,39 @@
                     <div class="map-container">
                         <svg id="map" />
 
-                        <div class="map-legend expand-panel" data-bind="visible: displayMode() == 2">
-                            <div class="expand-panel-title button">Symbology and Options</div>
-                            <div class="expand-panel-contents">
-                                {% include legend.html %}
+                        <!-- Full-Screen Panels -->
+                        <div class="map-panels-left">
+                            <div class="expand-panel" data-bind="visible: displayMode() == 2">
+                                <div class="expand-panel-title button" data-bind="click: toggleLegendDisplay">Legend</div>
+                                <div class="expand-panel-contents" data-bind="visible: !hiddenLegend()">
+                                    {% include legend.html %}
+                                </div>
                             </div>
                         </div>
-
+                        <div class="map-panels-right">
+                            <div class="expand-panel" data-bind="visible: displayMode() == 2 && selectedPoints().length > 0">
+                                <div class="expand-panel-title button" data-bind="click: toggleDetailDisplay">
+                                    <span data-bind="text: selectedPoints().length"></span> Points Selected
+                                </div>
+                                <div class="expand-panel-contents" data-bind="visible: !hiddenDetail()">
+                                    {% include selected-points.html %}
+                                </div>
+                            </div>
+                            <div class="expand-panel" data-bind="visible: displayMode() == 2">
+                                <div class="expand-panel-title button" data-bind="click: toggleFilterDisplay">Filter</div>
+                                <div class="expand-panel-contents" data-bind="visible: !hiddenFilter()">
+                                    {% include filter.html %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="map-panels-right-bottom">
+                            <div class="expand-panel" data-bind="visible: displayMode() == 2 && (stashedFilters().length > 0 || stashedSlices().length > 0)">
+                                <div class="expand-panel-contents">
+                                    {% include applied-filters-and-slices.html %}
+                                </div>
+                            </div>
+                        </div>
+            
                         <div class="map-controls">
                             <div class="zoom-buttons">
                                 <a data-bind="click: zoomIn" class="button">
@@ -78,12 +104,10 @@
                                 <a data-bind="click: toggleFullScreen, visible: displayMode() == 1" class="button">
                                     <i class="fas fa-expand-arrows-alt"></i>
                                 </a>
+                                <a data-bind="click: toggleFullScreen, visible: displayMode() == 2" class="button">
+                                    <i class="fas fa-window-close"></i>
+                                </a>            
                             </div>
-                        </div>
-                        <div class="fullscreen-button">
-                            <a data-bind="click: toggleFullScreen, visible: displayMode() == 2">
-                                <i class="fas fa-window-close"></i>
-                            </a>
                         </div>
                     </div>
                     <div data-bind="visible: displayMode() == 1">

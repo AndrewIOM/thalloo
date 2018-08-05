@@ -74,6 +74,11 @@ export class ThallooViewModel {
     displayedPointsCount = ko.observable(0);
     selectedPoints = ko.observableArray();
 
+    // Display options for full screen
+    hiddenLegend = ko.observable(true);
+    hiddenDetail = ko.observable(true);
+    hiddenFilter = ko.observable(true);
+
     constructor(mapName:string) {
         let self = this;
 
@@ -245,6 +250,10 @@ export class ThallooViewModel {
     zoomOut = () => {
         if (this.thallooMap != null) this.thallooMap.zoomOut();
     };
+
+    toggleLegendDisplay = () => { this.hiddenLegend(!this.hiddenLegend()) }
+    toggleDetailDisplay = () => { this.hiddenDetail(!this.hiddenDetail()) }
+    toggleFilterDisplay = () => { this.hiddenFilter(!this.hiddenFilter()) }
 
     redrawMap = () => {
         let self = this;

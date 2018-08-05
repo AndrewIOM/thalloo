@@ -4,17 +4,6 @@
     .button {
         background-color: rgba(255, 255, 255, 0.5);
     }
-    .fullscreen-button {
-        position: absolute;
-        top: 0.25em;
-        right: 0.25em;
-        a {
-            padding: 0px 0.5em;
-            font-size: 2.5em;
-            color: red;
-            cursor: pointer;
-        }
-    }
     .buttons-left {
         position: absolute;
         top: 0.25em;
@@ -35,10 +24,24 @@
             }
         }
     }
-    .map-legend {
+    .map-panels-left {
         position: absolute;
         top: 0.25em;
         left: 0.25em;
+        max-width: 20vw;
+    }
+
+    .map-panels-right {
+        width: 30vw;
+        position: absolute;
+        top: 0.25em;
+        right: 0.25em;
+    }
+    .map-panels-right-bottom {
+        width: 30vw;
+        position: absolute;
+        bottom: 0.25em;
+        right: 0.25em;
     }
 }
 
@@ -54,16 +57,25 @@ body.fullscreen {
 
 // Expand panels
 .expand-panel {
+    width: 100%;
+    margin-bottom: 0.5em;
     .expand-panel-title {
-        background-color: darkslateblue;
-        color: white;
+        background-color: rgba(255, 255, 255, 0.80);
         padding: 0.1em 1em;
+        display: block;
+        margin-bottom: 0;
+        line-height: 3em;
+        height: 3em;
     }
     .expand-panel-title:hover {
-        color: white;
+        background-color: rgba(175, 174, 174, 0.80);
     }
     .expand-panel-contents {
-        display: none;
+        max-height: 33vh;
+        overflow: scroll;
+        background-color: rgba(255, 255, 255, 0.788);
+        border: 0.5px solid lightgrey;
+        padding:1em;
     }
 }
 
