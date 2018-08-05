@@ -1,7 +1,5 @@
-<form id="filter-form" data-bind="submit: stashFilter">
-    <h3>Filter</h3>
-
-    <label for="exampleRecipientInput">Metadata</label>
+<form id="filter-form" data-bind="submit: stashFilter, visible: filters().length > 0">
+    <label for="exampleRecipientInput">Filter By:</label>
     <select class="u-full-width" data-bind=" options: filters,
                     optionsText: function(item) { return item.Name },
                     value: selectedFilter"></select>

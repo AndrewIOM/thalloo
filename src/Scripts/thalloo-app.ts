@@ -32,6 +32,7 @@ type ActiveSlicer = {
     Name: string
     Min: number
     Max: number
+    Unit: string
 }
 
 type MetaData = number | string
@@ -215,18 +216,22 @@ export class ThallooViewModel {
             DataType: selected.DataType,
             SelectedOptions: this.selectedFilterValues()
         });
+        this.filters.remove(this.selectedFilter());
     };
 
     removeFilter = (filter:Filter) => {
         this.stashedFilters.remove(filter);
+        this.filters.push(filter);
     };
 
-    stashSlice = (name, lower, upper) => {
+    stashSlice = () => {
         this.stashedSlices.push({
-            Name: name,
-            Min: lower,
-            Max: upper
+            Name: this.currentSlice().Name,
+            Min: this.currentSliceMin(),
+            Max: this.currentSliceMax(),
+            Unit: this.currentSlice().Unit
         });
+        this.currentSlice();
     };
 
     removeSlice = (slice:Slicer) => {

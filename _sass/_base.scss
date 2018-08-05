@@ -104,10 +104,11 @@ header {
     overflow-x: hidden;
 }
 
-a.button, button, .button {
+a.button,
+button,
+.button {
     border-radius: 0 !important;
 }
-
 
 /* Layout */
 
@@ -143,7 +144,6 @@ body {
     color: white;
 }
 
-
 /* Collapsable Panels */
 
 .panel-heading span {
@@ -159,7 +159,6 @@ body {
 .clickable {
     cursor: pointer;
 }
-
 
 /* OxLEL Banner and Footer */
 
@@ -210,16 +209,14 @@ body {
 .heading-description {
     text-align: center;
     display: block;
-
     a {
         cursor: pointer;
     }
 }
 
 // Logos
-
 .logo-container {
-    margin-top:1em;
+    margin-top: 1em;
     text-align: center;
     img {
         max-height: 4em;
@@ -229,46 +226,63 @@ body {
 }
 
 // Detail Lists
-dl{
+dl {
     border-bottom: 0.25px solid lightgrey;
     margin-bottom: 0.2em;
- }
- 
- dt {
-   display:table-cell;
-   vertical-align:top;
-   width: 30%;
-   padding-right:5px;
- }
- dd {
-   display:table-cell;
-   vertical-align:top;
-   width: 70%;
-   margin: 0;
- }
+}
 
- /* Filtering and Tags */
+dt {
+    display: table-cell;
+    vertical-align: top;
+    width: 30%;
+    padding-right: 5px;
+}
 
-.results-card {
-    border: 1px solid #E1E1E1;
-    border-radius: 4px;
+dd {
+    display: table-cell;
+    vertical-align: top;
+    width: 70%;
+    margin: 0;
+}
 
+/* Filtering and Tags */
+
+.filter-card {
+    // border: 1px solid #E1E1E1;
+    // border-radius: 4px;
+    // padding: 0 0.5em;
     .filter-list {
         list-style: none;
-
-        li {
+        margin-bottom: 0;
+        li.filter-list-item {
             border-top: 0.5px solid lightgrey;
             padding: 0.5em 0;
             border-bottom: 0.5px solid lightgrey;
-
+            margin-bottom: 0;
             .remove-button {
                 float: right;
+                cursor: pointer;
+                font-size: 0.8em;
             }
-
             .name {
                 font-variant: small-caps;
                 display: block;
                 width: 80%;
+            }
+            ul.or-tokens {
+                list-style: none;
+                margin: 0;
+                li {
+                    display: inline;
+                }
+                li:after {
+                    content: 'or';
+                    margin: 0 0.2em;
+                    font-size: 0.9em;
+                }
+                li:last-child:after {
+                    content: none;
+                }
             }
         }
     }
@@ -281,9 +295,22 @@ dl{
     border-radius: 0.3em;
     font-size: 0.80em;
     font-family: Arial;
- }
+    line-height: 2.25em;
+}
 
- .token-range {
-     background-color: rgb(214, 140, 2);
-     color: black;
- }
+.token-range {
+    background-color: rgb(214, 140, 2);
+    color: black;
+}
+
+// Filter options
+#filter-form {
+    button {
+        display: block;
+        width: 100%;
+    }
+}
+
+.symbology-container {
+    margin-bottom: 1em;
+}

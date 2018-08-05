@@ -1,28 +1,24 @@
-<div class="results-card">
-    <div class="current-count">
-        <span data-bind="text: displayedPointsCount"></span>
-        data points
-    </div>
+<div class="filter-card">
 
     <ul class="filter-list" data-bind="visible: stashedSlices().length > 0, foreach: stashedSlices">
-        <li>
+        <li class="filter-list-item">
             <span class="remove-button">
-                <a href="#" data-bind="click: $parent.removeSlice">☓</button>
+                <a href="#" data-bind="click: $parent.removeSlice">Remove</a>
             </span>
             <span class="name" data-bind="text: Name"></span>
-            <span class="token token-range" data-bind="text: Min + ' - ' + Max"></span>
+            <span class="token token-range" data-bind="text: Min + ' - ' + Max + ' ' + Unit"></span>
         </li>
     </ul>
 
     <ul class="filter-list" data-bind="visible: stashedFilters().length > 0, foreach: stashedFilters">
-        <li>
+        <li class="filter-list-item">
             <span class="remove-button">
-                <a href="#" data-bind="click: $parent.removeFilter">☓</button>
+                <a href="#" data-bind="click: $parent.removeFilter">Remove</a>
             </span>
             <span class="name" data-bind="text: Name"></span>
-            <span data-bind="foreach: SelectedOptions">
-                <span class="token" data-bind="text: $data"></span>
-            </span>
+            <ul class="or-tokens" data-bind="foreach: SelectedOptions">
+                <li><span class="token" data-bind="text: $data"></span></li>
+            </ul>
         </li>
     </ul>
 

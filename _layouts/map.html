@@ -87,25 +87,31 @@
                         </div>
                     </div>
                     <div data-bind="visible: displayMode() == 1">
-                        {% include slicer.html %} 
-                        {% include selected-points.html %}
+                        {% include slicer.html %} {% include selected-points.html %}
                     </div>
                 </div>
                 <div class="three columns" data-bind="visible: displayMode() == 1">
-                    {{ content }}
-                    <p data-bind="text: publication"></p>
-                    {% include applied-filters-and-slices.html %} 
+                    <h3>Filter</h3>
+                    {% include applied-filters-and-slices.html %}
                     {% include filter.html %} 
+                    <p class="current-count">
+                        Showing <span data-bind="text: displayedPointsCount"></span> data points.
+                    </p>                    
                     {% include legend.html %}
+                    {{ content }}
                 </div>
             </div>
 
             <footer data-bind="visible: displayMode() == 1">
                 <span>Thalloo mapping framework &copy; Andrew C Martin</span>
                 <span class="seperator">/</span>
-                <span><a href="https://github.com/AndrewIOM/thalloo-starter" target="_blank">create your own instance</a></span>
+                <span>
+                    <a href="https://github.com/AndrewIOM/thalloo-starter" target="_blank">create your own instance</a>
+                </span>
                 <span class="seperator">/</span>
-                <span>open-source at <a href="https://github.com/AndrewIOM/thalloo" target="_blank">GitHub</a></span>
+                <span>open-source at
+                    <a href="https://github.com/AndrewIOM/thalloo" target="_blank">GitHub</a>
+                </span>
             </footer>
 
         </div>
