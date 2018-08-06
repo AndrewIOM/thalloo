@@ -149,7 +149,8 @@ export class ThallooViewModel {
 
             // Load data
             loadData.then(data => {
-                self.rawData = _.collect(data, Helper.tryParseDataPoint);
+                self.rawData = _.flatten(_.map(data, Helper.tryParseDataPoint));
+                console.log(self.rawData);
                 // Setup slicers and filters
                 _(config.Fields)
                 .map(function (field) {
@@ -306,7 +307,7 @@ module Helper {
     /// Where a data row contains a field 'LatDD,LonDD' of one or many coordinates,
     /// this function returns an array of data rows, containing duplicated data,
     /// one row per coordinate.
-    export function splitDataBySite(dataRow:string) {
+    export function splitDataBySite(dataRow:any) {
         return _(dataRow['LatDD,LonDD'].split(';'))
                 .chain()
                 .map(function(d) { return d.split(','); })
@@ -314,7 +315,7 @@ module Helper {
                 .map(function(d) {
                     let originalRow = dataRow;
                     let newProps = { LatDD: d[0].trim(), LonDD: d[1].trim() };
-                    return jQuery.extend(originalRow, newProps);
+                    return $.extend(originalRow, newProps);
                 })
                 .value();
     }
@@ -337,9 +338,7 @@ module Helper {
     }
 
     export function tryParseDataPoint(d:any) {
-        if (d['LatDD,LonDD'] != undefined) {
-            return isString(d) ? Helper.splitDataBySite(d) : [];
-        }
+        if (d['LatDD,LonDD'] != undefined) { return Helper.splitDataBySite(d); }
         return d;
     }
 }
