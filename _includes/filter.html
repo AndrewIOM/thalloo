@@ -4,7 +4,7 @@
                     optionsText: function(item) { return item.Name },
                     value: selectedFilter"></select>
 
-    <span data-bind="text: selectedFilter() ? selectedFilter().description : ''"></span>
+    <span data-bind="text: selectedFilter() ? selectedFilter().Description : ''"></span>
 
     <select multiple style="height:15em; width:100%;" data-bind="options: selectedFilter() ? selectedFilter().Options : [],
                selectedOptions: selectedFilterValues"></select>
