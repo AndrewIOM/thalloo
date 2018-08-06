@@ -149,7 +149,7 @@ export class ThallooViewModel {
 
             // Load data
             loadData.then(data => {
-                self.rawData = _.map(data, Helper.tryParseDataPoint);
+                self.rawData = _.collect(data, Helper.tryParseDataPoint);
                 // Setup slicers and filters
                 _(config.Fields)
                 .map(function (field) {
@@ -336,47 +336,10 @@ module Helper {
         });
     }
 
-    export function tryParseDataPoint(d:any) : T.Option<ThallooMap.DataPoint> {
+    export function tryParseDataPoint(d:any) {
+        if (d['LatDD,LonDD'] != undefined) {
+            return isString(d) ? Helper.splitDataBySite(d) : [];
+        }
         return d;
-        //         // Load App State
-//         let loadData = d3.tsv("../map-data/" + mapName + ".txt");
-//         loadData.then( (data) => {
-//             self.rawData = data;
-//             if (data.entries.length > 0) {
-//                 if (data.entries[0]['LatDD,LonDD'] != undefined) {
-//                     self.rawData = 
-//                         _(self.rawData)
-//                         .chain()
-//                         .map((d) => isString(d) ? Helper.splitDataBySite(d) : undefined)
-//                         .flatten()
-//                         .value();
-//                 }
-//             }
-
-//         })
     }
 }
-
-
-//         //((error, rawData) => { 
-            
-//             self.rawData = rawData;
-
-//             if (self.rawData)
-
-//             return null; 
-//         } ));
-//             //this.rawData = rawData;
-    
-//             // // Split out 'LatDD,LonDD' column into 'LatDD' and 'LonDD' programatically
-//             // if (self.rawData[0]['LatDD,LonDD'] != undefined) {
-//             //     self.rawData = _(self.rawData)
-//             //         .chain()
-//             //         .map(unstackLatLon)
-//             //         .flatten()
-//             //         .value();
-//             // });
-    
-    
-//     }
-// }
