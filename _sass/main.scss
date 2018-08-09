@@ -1,6 +1,9 @@
 // @import "../node_modules/skeleton-css/css/normalize.css";
 // @import "../node_modules/skeleton-css/css/skeleton.css";
 
+$primary-colour: #0FA0CE;
+
 @import "_base";
 @import "_layout";
 @import "_map";
+@import "_slider";

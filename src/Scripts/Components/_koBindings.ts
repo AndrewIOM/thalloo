@@ -6,22 +6,20 @@ import * as ko from "knockout";
 import * as noUiSlider from 'nouislider';
 
 ko.bindingHandlers.slider = {
-    init: function (element, valueAccessor, allBindingsAccesor, viewModel, bindingContext) {
+    init: function (element, _valueAccessor, _allBindingsAccesor, viewModel, _bindingContext) {
         if (viewModel.currentSlice() == null) return;
         noUiSlider.create(element, {
-            start: [-9999, 9999],
+            start: [viewModel.currentSlice().Min, viewModel.currentSlice().Max],
+            connect: true,
             range: {
                 'min': viewModel.currentSlice().Min,
                 'max': viewModel.currentSlice().Max
             },
-            connect: true,
             behaviour: 'tap-drag',
             step: 1,
         });
-        ( < noUiSlider.Instance > element).noUiSlider.on('slide', function (values, handle) {
+        (<noUiSlider.Instance> element).noUiSlider.on('slide', function (values, handle) {
             var value = values[handle];
-            console.log(value);
-            console.log(handle);
             if (handle) {
                 viewModel.currentSliceMax(value);
             } else {
@@ -29,12 +27,11 @@ ko.bindingHandlers.slider = {
             }
         });
     },
-    update: function (element, valueAccessor, allBindingsAccesor, viewModel, bindingContext) {
+    update: function (element, _valueAccessor, _allBindingsAccesor, viewModel, _bindingContext) {
         if (viewModel.currentSlice() == null) {
             let e = document.getElementById('slicer');
             if (e != null) e.setAttribute('disabled', "true");
         } else {
-            console.log(viewModel.currentSlice().Min + " - " + viewModel.currentSlice().Max);
             if (element.innerHTML.length > 0) {
                 updateSliderRange(viewModel.currentSlice().Min, viewModel.currentSlice().Max);
                 let e = document.getElementById('slicer');

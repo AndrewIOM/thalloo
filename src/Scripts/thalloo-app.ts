@@ -4,7 +4,6 @@ import './Components/_koBindings';
 import * as $ from 'jquery';
 import * as d3 from 'd3';
 import * as _ from 'underscore';
-import { isString } from 'util';
 import * as ThallooMap from './thalloo-mapping';
 import * as ko from "knockout";
 import * as T from "./types";
@@ -108,7 +107,6 @@ export class ThallooViewModel {
             if (slice != null) {
                 self.currentSliceMin(slice.Min);
                 self.currentSliceMax(slice.Max);
-                console.log(slice);
                 self.redrawMap();
             } else {
                 self.redrawMap();
@@ -150,7 +148,6 @@ export class ThallooViewModel {
             // Load data
             loadData.then(data => {
                 self.rawData = _.flatten(_.map(data, Helper.tryParseDataPoint));
-                console.log(self.rawData);
                 // Setup slicers and filters
                 _(config.Fields)
                 .map(function (field) {
@@ -272,9 +269,6 @@ export class ThallooViewModel {
         }
 
         if (this.currentSlice() != null) {
-            console.log(self.currentSliceMax());
-            console.log(self.currentSliceMin());
-
             filteredAndSlicedData =
                 _(filteredAndSlicedData)
                 .chain()
