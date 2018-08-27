@@ -23,8 +23,7 @@
                 <small id="study-publication"></small>
             </h1>
             <span data-bind="ifnot:descriptionExpanded" class="heading-description">
-                <!-- <span data-bind="truncatedText: description, maxTextLength: 250"></span> -->
-                <span data-bind="text: description"></span>
+                <span data-bind="truncatedText: description, maxTextLength: 250"></span>
                 <a data-bind="click: toggleDescriptionLength"> more...</a>
             </span>
             <span data-bind="if:descriptionExpanded" class="heading-description">

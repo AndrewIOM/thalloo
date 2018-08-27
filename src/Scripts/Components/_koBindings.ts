@@ -82,10 +82,12 @@ function updateSliderRange(min:number, max:number) {
 }
 
 ko.bindingHandlers.truncatedText = {
-    update: function (element, valueAccessor, allBindingsAccessor) {
+    update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
         let originalText = ko.utils.unwrapObservable(valueAccessor());
         let length = ko.utils.unwrapObservable<string>(allBindingsAccessor().maxTextLength) || 20
         let truncatedText = originalText.length > length ? originalText.substring(0, length) : originalText;
-        ko.bindingHandlers.text.update = element, () => { return truncatedText; }, <any>null, null, <any>null;
+        if (ko.bindingHandlers.text.update != null) {
+            ko.bindingHandlers.text.update(element, () => { return truncatedText; }, allBindingsAccessor, viewModel, bindingContext); 
+        }
     }
 };
