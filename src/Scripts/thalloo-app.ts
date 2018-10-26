@@ -153,14 +153,17 @@ export class ThallooViewModel {
                 .map(function (field) {
                     // Split into slices and filters
                     if (field.DataType == T.DataType.Continuous) {
+                        console.log(_.chain(self.rawData).pluck(field.Column).filter(n => { return Number.isFinite(Number.parseFloat(n)); }).value());
                         let slicer : Slicer = 
                             {   Min: Number(
                                         _.chain(self.rawData)
-                                        .pluck(field.Column).filter(n => { return !isNaN(parseFloat(n)) && isFinite(n); })
+                                        .pluck(field.Column).filter(n => { return Number.isFinite(Number.parseFloat(n)); })
+                                        .map(n => Number.parseFloat(n))
                                         .min()
                                         .value()),
                                 Max: Number(_.chain(self.rawData)
-                                        .pluck(field.Column).filter(n => { return !isNaN(parseFloat(n)) && isFinite(n); })
+                                        .pluck(field.Column).filter(n => { return Number.isFinite(Number.parseFloat(n)); })
+                                        .map(n => Number.parseFloat(n))
                                         .max()
                                         .value()),
                                 Unit: field.Unit,
