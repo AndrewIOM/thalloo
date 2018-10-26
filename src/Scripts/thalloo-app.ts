@@ -56,7 +56,8 @@ export class ThallooViewModel {
     title = ko.observable<string>();
     description = ko.observable<string>("");
     descriptionExpanded = ko.observable(false);
-    publication = ko.observable<string>();
+    publication = ko.observable<string>("");
+    publicationUrl = ko.observable<string>("");
     displayUnit = ko.observable();
     baselayers = ko.observableArray<T.BaseLayer>([]);
     logos = ko.observableArray<T.Logo>([]);
@@ -126,7 +127,8 @@ export class ThallooViewModel {
             self.baselayers(config.BaseLayers);
             self.title(config.Name);
             self.description(config.Description);
-            self.publication(config.Publication);
+            self.publication(config.PublicationReference);
+            self.publicationUrl(config.PublicationUrl);
             self.displayUnit(config.DisplayUnit);
             self.logos(config.Logos);
 

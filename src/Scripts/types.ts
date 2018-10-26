@@ -38,7 +38,8 @@ export type MapConfiguration = {
     Name:               string
     Description:        string
     Logos:              Logo[]
-    Publication:        string
+    PublicationUrl:     string
+    PublicationReference:string
     Projection:         Projection
     DisplayMode:        Symbology
     DisplayUnit:        string
