@@ -32,7 +32,7 @@
             </span>
             <!-- Logos -->
             <div class="logo-container" data-bind="foreach: logos">
-                <img data-bind="attr: { src: '{{ site.baseurl }}/images/logos/' + $data.File + '.png' }" />
+                <a target="_blank" data-bind="attr: { href: $data.ExternalUrl }"><img data-bind="attr: { src: '{{ site.baseurl }}/images/logos/' + $data.File + '.png' }" /></a>
             </div>
             <hr/>
         </div>

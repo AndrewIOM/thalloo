@@ -2,11 +2,16 @@
 layout: default
 ---
 
-<h1>Evidence Maps</h1>
+{% assign rows = site.maps.size | divided_by: 4.0 | ceil %}
+
+<h1>{{ site.title }}</h1>
+<p style="text-align:center">{{ site.description }}</p>
 <hr/>
 
-<div class="row">
-    {% for map in site.maps %}
+{% for i in (1..rows) %}
+  <div class="row">
+    {% assign offset = forloop.index0 | times: 4 %}
+    {% for map in site.maps limit:4 offset:offset %}
     <div class="three columns">
             <div class="study-preview">
                 <a href="{{ site.baseurl }}{{ map.url }}">
@@ -17,3 +22,6 @@ layout: default
     </div>
     {% endfor %}
 </div>
+{% endfor %}
+
+{% include attribution-footer.html %}

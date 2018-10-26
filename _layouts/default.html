@@ -6,9 +6,10 @@
 <body data-baseurl="{{ site.baseurl }}">
 
     <div class="container">
-        <div class="top-links">
-            <a href="{{ site.ownerurl }}/" target="_blank" class="top-links-right">{{ site.ownername }}</a>            
-        </div>
+            <div class="top-links">
+                <a href="{{ site.ownerurl }}/" target="_blank" class="top-links-right">{{ site.ownername }}</a>            
+                <p>{{ site.title }}</p>            
+            </div>
         <hr/>
         {{ content }}
         {% include analytics.html %}
