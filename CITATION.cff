@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Martin
+    given-names: Andrew Christopher
+    orcid: https://orcid.org/0000-0001-5540-6161
+title: "thalloo: a framework for web visualisation of geographical evidence maps."
+version: 1.0
+date-released: 2018-08-05
