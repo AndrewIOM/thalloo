@@ -23,13 +23,15 @@
             </h1>
             <span data-bind="ifnot:descriptionExpanded" class="heading-description">
                 <span data-bind="truncatedText: description, maxTextLength: 250"></span>
-                <a data-bind="click: toggleDescriptionLength"> more...</a>
+                <a data-bind="click: toggleDescriptionLength, visible: description().length > 250"> more...</a>
+                <a data-bind="click: toggleDescriptionLength, visible: description().length < 250"> Show references.</a>
             </span>
             <span data-bind="if:descriptionExpanded" class="heading-description">
-                <p><span data-bind="text: description"></span><a data-bind="click: toggleDescriptionLength"> [Less].</a></p>
-                <p data-bind="visible: publication().length > 0">
+                <p><span data-bind="text: description"></span></p>
+                <p data-bind="visible: publication != ''" class="small-text">
                     <strong>Reference:</strong> <span data-bind="text: publication"></span><a target="_blank" data-bind="attr: { href: publicationUrl }"> Access online</a>
                 </p>
+                <a data-bind="click: toggleDescriptionLength"> Hide additional details.</a>
             </span>
             <!-- Logos -->
             <div class="logo-container" data-bind="foreach: logos">

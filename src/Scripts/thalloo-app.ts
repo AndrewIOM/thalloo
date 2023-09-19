@@ -204,6 +204,14 @@ export class ThallooViewModel {
         });
     }
 
+    scrollToTop = () => {
+        let offset = $("#map").offset();
+        let offsetTop = offset == undefined ? 0 : offset.top;
+        $('html, body').animate({
+            scrollTop: offsetTop
+        }, 750, "swing");
+    }
+
     toggleFullScreen = () => {
         if (this.displayMode() == DisplayMode.FULLSCREEN) this.displayMode(DisplayMode.STANDARD);
         else if (this.displayMode() == DisplayMode.STANDARD) this.displayMode(DisplayMode.FULLSCREEN);
