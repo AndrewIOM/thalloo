@@ -291,8 +291,8 @@ export class ThallooMap {
             })
             .attr("class", "pies marker")
             .on("click", function(d) { 
-                $(self).trigger(ThallooMapEvent.SELECTED_POINTS);
                 self._selectedPoints = d.DataPoints;
+                $(self).trigger(ThallooMapEvent.SELECTED_POINTS);
             });
 
         points.selectAll('path')

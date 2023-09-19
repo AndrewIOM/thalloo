@@ -138,11 +138,11 @@ export class ThallooViewModel {
                     let selectedPoints = self.thallooMap.selectedPoints();
                     let allFields = _.map(selectedPoints, Helper.objectToKeyValue);
                     self.selectedPoints(allFields);
-                    let offset = ($("#selected").offset());
+                    let offset = $("#slicer").offset();
                     if (offset != undefined) {
                         $('html, body').animate({
                             scrollTop: offset.top
-                        }, 200);
+                        }, 750, "swing");
                     }
                 }
             });
