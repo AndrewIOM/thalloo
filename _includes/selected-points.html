@@ -2,7 +2,8 @@
 <div id="selected" data-bind="if: selectedPoints().length > 0">
     <h3>
         <span data-bind="text: selectedPoints().length"></span> Selected</h3>
-    <ul data-bind="foreach: selectedPoints" class="card-list">
+    <a data-bind="click: scrollToTop" href="#">Scroll up to map</a>
+    <ul data-bind="foreach: selectedPoints.slice(0,100)" class="card-list">
         <li data-bind="foreach: $data">
             <dl style="margin-bottom:0">
                 <dt style="width: 30%;display: inline-block;font-weight: bold;" data-bind="text: $data.key"></dt>
