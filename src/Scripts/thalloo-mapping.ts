@@ -422,7 +422,6 @@ module Validation {
                 return point;
             }
         }
-        console.log("Warning: a point did not have valid spatial coordinates");
         return undefined;
     }
 
