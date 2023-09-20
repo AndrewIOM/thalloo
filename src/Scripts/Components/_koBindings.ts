@@ -59,7 +59,6 @@ function createSlider(element, viewModel) {
     });
     element.noUiSlider.on('slide', function (values, handle) {
         var value = Number(values[Number(handle)]);
-        console.log(value);
         if (handle) {
             viewModel.currentSliceMax(value);
 

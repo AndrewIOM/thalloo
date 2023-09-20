@@ -14,15 +14,25 @@ enum DisplayMode {
     FULLSCREEN = 2
   };
 
+type RangeSlice = {
+    ColumnMin: string
+    ColumnMax: string
+}
+
 type Slicer = {
     Name: string
-    Column: string
+    Column: string | RangeSlice
     Unit: string
     Min: number
     Max: number
 }
 
-interface Filter extends T.DataField {
+interface Filter {
+    Column: string
+    Name: string
+    Unit: string
+    Description: string
+    DataType: T.DataType
     Options: string[]
     SelectedOptions: string[]
 }
@@ -147,6 +157,11 @@ export class ThallooViewModel {
                 }
             });
 
+            const getColumnNumbers = (rawData: any[], column: string) => 
+                _.chain(rawData)
+                .pluck(column).filter(n => { return Number.isFinite(Number.parseFloat(n)); })
+                .map(n => Number.parseFloat(n));
+
             // Load data
             loadData.then(data => {
                 self.rawData = _.flatten(_.map(data, Helper.tryParseDataPoint));
@@ -155,24 +170,36 @@ export class ThallooViewModel {
                 .map(function (field) {
                     // Split into slices and filters
                     if (field.DataType == T.DataType.Continuous) {
-                        console.log(_.chain(self.rawData).pluck(field.Column).filter(n => { return Number.isFinite(Number.parseFloat(n)); }).value());
-                        let slicer : Slicer = 
-                            {   Min: Number(
-                                        _.chain(self.rawData)
-                                        .pluck(field.Column).filter(n => { return Number.isFinite(Number.parseFloat(n)); })
-                                        .map(n => Number.parseFloat(n))
-                                        .min()
-                                        .value()),
-                                Max: Number(_.chain(self.rawData)
-                                        .pluck(field.Column).filter(n => { return Number.isFinite(Number.parseFloat(n)); })
-                                        .map(n => Number.parseFloat(n))
-                                        .max()
-                                        .value()),
-                                Unit: field.Unit,
-                                Name: field.Name,
-                                Column: field.Column }
-                        self.slices.push(slicer);
-                    } else if (field.DataType == T.DataType.Categorical) {
+                        if (Array.isArray(field.Column)) {
+                            if (field.Column.length == 2) {
+                                // Configure a range slicer based on two columns
+                                let min = _.min([
+                                    Number(getColumnNumbers(self.rawData, field.Column[0]).min().value()),
+                                    Number(getColumnNumbers(self.rawData, field.Column[1]).min().value()) ]);
+                                let max = _.min([
+                                    Number(getColumnNumbers(self.rawData, field.Column[0]).max().value()),
+                                    Number(getColumnNumbers(self.rawData, field.Column[1]).max().value()) ]);
+                                    let slicer : Slicer = 
+                                {   Min: min, 
+                                    Max: max,
+                                    Unit: field.Unit,
+                                    Name: field.Name,
+                                    Column: { ColumnMin: field.Column[0], ColumnMax: field.Column[1] } }
+                                self.slices.push(slicer);    
+                            } else {
+                                console.log("The slicer " + field.Name + " had invalid column name(s).");
+                            }
+                        } else {
+                            // Configure a simple single number slicer
+                            let slicer : Slicer = 
+                            {   Min: Number(getColumnNumbers(self.rawData, field.Column).min().value()),
+                                Max: Number(getColumnNumbers(self.rawData, field.Column).max().value()),
+                                    Unit: field.Unit,
+                                    Name: field.Name,
+                                    Column: field.Column }
+                            self.slices.push(slicer);
+                        }
+                    } else if (field.DataType == T.DataType.Categorical && !Array.isArray(field.Column)) {
                         let filter : Filter =
                             { Options: _.chain(self.rawData)
                                         .pluck(field.Column)
@@ -265,7 +292,7 @@ export class ThallooViewModel {
     toggleLegendDisplay = () => { this.hiddenLegend(!this.hiddenLegend()) }
     toggleDetailDisplay = () => { this.hiddenDetail(!this.hiddenDetail()) }
     toggleFilterDisplay = () => { this.hiddenFilter(!this.hiddenFilter()) }
-
+        
     redrawMap = () => {
         let self = this;
 
@@ -285,11 +312,20 @@ export class ThallooViewModel {
             filteredAndSlicedData =
                 _(filteredAndSlicedData)
                 .chain()
-                .filter(function (dp) {
-                    let match = 
-                        Number(dp[self.currentSlice().Column]) <= Number(self.currentSliceMax()) 
-                        && Number(dp[self.currentSlice().Column]) >= Number(self.currentSliceMin());
-                    return match;
+                .filter((dp) => {
+                    let column = self.currentSlice().Column;
+                    if (_.isString(column)) {
+                        let match = 
+                            Number(dp[column]) <= Number(self.currentSliceMax()) 
+                            && Number(dp[column]) >= Number(self.currentSliceMin());
+                        return match;
+                    } else {
+                        // Test for overlapping ranges
+                        let match = 
+                            Number(dp[column.ColumnMin]) <= Number(self.currentSliceMax()) 
+                            && Number(self.currentSliceMin()) <= Number(dp[column.ColumnMax]);
+                        return match;
+                    }
                 })
                 .value();
         }

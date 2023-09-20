@@ -555,8 +555,6 @@ module Clustering {
             let pointsMinusCluster = _.difference(remainingPoints, nearby);
             diagnosticCount++;
             if (diagnosticCount > 10000) {
-                console.log(clusters);
-                console.log(pointsMinusCluster);
                 return clusters;
             }
             if (pointsMinusCluster.length > 0) {

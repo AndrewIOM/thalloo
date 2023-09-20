@@ -21,7 +21,7 @@ export type BaseLayer = {
 
 export enum DataType { Continuous = "float", Categorical = "string" }
 export type DataField = {
-    Column: string
+    Column: string | string[]
     Name: string
     Unit: string
     Description: string
