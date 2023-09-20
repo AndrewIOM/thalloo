@@ -48,7 +48,7 @@ ko.bindingHandlers.slider = {
 function createSlider(element, viewModel) {
     if (viewModel.currentSlice() == null) return;
     noUiSlider.create(element, {
-        start: [-9999, 9999],
+        start: [viewModel.currentSlice().Min, viewModel.currentSlice().Max],
         range: {
             'min': Number(viewModel.currentSlice().Min),
             'max': Number(viewModel.currentSlice().Max)
@@ -77,6 +77,7 @@ function updateSliderRange(min:number, max:number) {
                 'max': max
             }
         });
+        e.noUiSlider.set([min, max]);
     }
 }
 
