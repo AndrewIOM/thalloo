@@ -286,6 +286,15 @@ dd {
     }
 }
 
+.multi-drop {
+    height:15em;
+    width:100%;
+}
+
+.x-scroll {
+    overflow-x: scroll;
+}
+
 .token {
     background-color: black;
     padding: 0.4em;
@@ -316,4 +325,14 @@ dd {
 .small-text {
     line-height: 1.3em;
     font-size: 0.85em;
+}
+
+.mb-sm {
+    margin-bottom: 0.2em;
+}
+
+.help-text {
+    font-size: 0.8em;
+    font-weight: lighter;
+    color: #666;
 }

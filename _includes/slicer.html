@@ -1,13 +1,16 @@
 <h3>Slice</h3>
 <div class="slicer">
     <label for="slicer">By Dimension</label>
-    <select class="u-full-width" data-bind=" options: slices, optionsCaption: 'None', optionsText: function(item) { return item.Name }, value: currentSlice"></select>
+    <select class="u-full-width mb-sm" data-bind=" options: availableSlices, optionsCaption: 'None', optionsText: function(item) { return item.Name }, value: currentSlice"></select>
+    <p class="help-text" data-bind="text: currentSlice() ? currentSlice().Description : ''"></p>
     <div id="slicer" data-bind="slider: currentSlice, sliderOptions: {minValue: 0, max: 100, range: 'min', step: 1"></div>
 </div>
-<div data-bind="visible: currentSlice() != null">
+<div class="slider-help-text" data-bind="visible: currentSlice() != null">
     <span data-bind="text: currentSliceMin">?</span> -
     <span data-bind="text: currentSliceMax">?</span>
     <span data-bind="text: currentSlice() ? currentSlice().Unit : ''">?</span>
     <br/>
+</div>
+<div data-bind="visible: currentSlice() != null">
     <button data-bind="click: stashSlice">Save Slice</button>
 </div>

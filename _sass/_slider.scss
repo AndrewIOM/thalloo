@@ -6,3 +6,14 @@
 .noUi-handle {
     border-radius: 0;
 }
+
+.noUi-horizontal {
+    margin: 0 1em;
+}
+
+.slider-help-text {
+    @extend .help-text;
+    margin-top: 0.5em;
+    text-align: center;
+    color: #000;
+}

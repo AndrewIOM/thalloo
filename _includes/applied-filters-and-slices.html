@@ -5,8 +5,8 @@
             <span class="remove-button">
                 <a href="#" data-bind="click: $parent.removeSlice">Remove</a>
             </span>
-            <span class="name" data-bind="text: Name"></span>
-            <span class="token token-range" data-bind="text: Min + ' - ' + Max + ' ' + Unit"></span>
+            <span class="name" data-bind="text: $data.Slicer.Name"></span>
+            <span class="token token-range" data-bind="text: $data.Slicer.Min + ' - ' + $data.Slicer.Max + ' ' + $data.Slicer.Unit"></span>
         </li>
     </ul>
 

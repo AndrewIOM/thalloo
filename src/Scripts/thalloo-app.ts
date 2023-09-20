@@ -22,6 +22,7 @@ type RangeSlice = {
 type Slicer = {
     Name: string
     Column: string | RangeSlice
+    Description: string
     Unit: string
     Min: number
     Max: number
@@ -38,10 +39,9 @@ interface Filter {
 }
 
 type ActiveSlicer = {
-    Name: string
+    Slicer: Slicer
     Min: number
     Max: number
-    Unit: string
 }
 
 type MetaData = number | string
@@ -83,6 +83,16 @@ export class ThallooViewModel {
     stashedSlices = ko.observableArray<ActiveSlicer>();
     displayedPointsCount = ko.observable(0);
     selectedPoints = ko.observableArray();
+
+    availableSlices = ko.computed(() => {
+        return _.chain(this.slices().filter((s) => {
+            return _.find(_.map(this.stashedSlices(), (stashed) => {
+                return stashed.Slicer.Name
+            }), (name) => {
+                return name == s.Name;
+            }) == null;
+        })).value();
+    }, this);
 
     // Display options for full screen
     hiddenLegend = ko.observable(true);
@@ -184,6 +194,7 @@ export class ThallooViewModel {
                                     Max: max,
                                     Unit: field.Unit,
                                     Name: field.Name,
+                                    Description: field.Description,
                                     Column: { ColumnMin: field.Column[0], ColumnMax: field.Column[1] } }
                                 self.slices.push(slicer);    
                             } else {
@@ -196,6 +207,7 @@ export class ThallooViewModel {
                                 Max: Number(getColumnNumbers(self.rawData, field.Column).max().value()),
                                     Unit: field.Unit,
                                     Name: field.Name,
+                                    Description: field.Description,
                                     Column: field.Column }
                             self.slices.push(slicer);
                         }
@@ -269,15 +281,14 @@ export class ThallooViewModel {
 
     stashSlice = () => {
         this.stashedSlices.push({
-            Name: this.currentSlice().Name,
+            Slicer: this.currentSlice(),
             Min: this.currentSliceMin(),
-            Max: this.currentSliceMax(),
-            Unit: this.currentSlice().Unit
+            Max: this.currentSliceMax()
         });
-        this.currentSlice();
+        this.currentSlice(null);
     };
 
-    removeSlice = (slice:Slicer) => {
+    removeSlice = (slice:ActiveSlicer) => {
         this.stashedSlices.remove(slice);
     }
 
@@ -293,6 +304,27 @@ export class ThallooViewModel {
     toggleDetailDisplay = () => { this.hiddenDetail(!this.hiddenDetail()) }
     toggleFilterDisplay = () => { this.hiddenFilter(!this.hiddenFilter()) }
         
+    sliceData = (data: ThallooMap.DataPoint[], slice: Slicer, selectedMin: number, selectedMax: number) => {
+        return _(data)
+        .chain()
+        .filter((dp) => {
+            let column = slice.Column;
+            if (_.isString(column)) {
+                let match = 
+                    Number(dp[column]) <= Number(selectedMax) 
+                    && Number(dp[column]) >= Number(selectedMin);
+                return match;
+            } else {
+                // Test for overlapping ranges
+                let match = 
+                    Number(dp[column.ColumnMin]) <= Number(selectedMax) 
+                    && Number(selectedMin) <= Number(dp[column.ColumnMax]);
+                return match;
+            }
+        })
+        .value();
+    }
+
     redrawMap = () => {
         let self = this;
 
@@ -309,25 +341,8 @@ export class ThallooViewModel {
         }
 
         if (this.currentSlice() != null) {
-            filteredAndSlicedData =
-                _(filteredAndSlicedData)
-                .chain()
-                .filter((dp) => {
-                    let column = self.currentSlice().Column;
-                    if (_.isString(column)) {
-                        let match = 
-                            Number(dp[column]) <= Number(self.currentSliceMax()) 
-                            && Number(dp[column]) >= Number(self.currentSliceMin());
-                        return match;
-                    } else {
-                        // Test for overlapping ranges
-                        let match = 
-                            Number(dp[column.ColumnMin]) <= Number(self.currentSliceMax()) 
-                            && Number(self.currentSliceMin()) <= Number(dp[column.ColumnMax]);
-                        return match;
-                    }
-                })
-                .value();
+            filteredAndSlicedData = this.sliceData(filteredAndSlicedData, this.currentSlice(), 
+                self.currentSliceMin(), self.currentSliceMax());
         }
 
         this.stashedFilters().forEach( f => {
@@ -335,6 +350,11 @@ export class ThallooViewModel {
                 _.filter(filteredAndSlicedData, dp => {
                     return _.contains(f.SelectedOptions, dp[f.Column]);
                 });
+        });
+
+        this.stashedSlices().forEach(slicer => {
+            filteredAndSlicedData = this.sliceData(filteredAndSlicedData, slicer.Slicer, 
+                slicer.Min, slicer.Max);
         });
         
         if (this.thallooMap != null) {

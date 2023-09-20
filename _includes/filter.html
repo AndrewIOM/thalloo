@@ -1,12 +1,12 @@
 <form id="filter-form" data-bind="submit: stashFilter, visible: filters().length > 0">
     <label for="exampleRecipientInput">Filter By:</label>
-    <select class="u-full-width" data-bind=" options: filters,
+    <select class="u-full-width mb-sm" data-bind=" options: filters,
                     optionsText: function(item) { return item.Name },
                     value: selectedFilter"></select>
 
-    <span data-bind="text: selectedFilter() ? selectedFilter().Description : ''"></span>
+    <p class="help-text" data-bind="text: selectedFilter() ? selectedFilter().Description : ''"></p>
 
-    <select multiple style="height:15em; width:100%;" data-bind="options: selectedFilter() ? selectedFilter().Options : [],
+    <select multiple class="multi-drop x-scroll" data-bind="options: selectedFilter() ? selectedFilter().Options : [],
                selectedOptions: selectedFilterValues"></select>
     <button>Save Filter</button>
 </form>
